@@ -42,7 +42,9 @@
         // Below method has a slight delay while changing the logo
         // document.getElementById("logo").getElementsByTagName('img')[0].src = image_url;
         document.getElementById("logo").title = "Bing 首页";
-        document.head.getElementsByTagName("title")[0].text = "微软 Bing 搜索 - 国际版";
+
+        // Don't use below line, or you cound't that your input while the cursor hovering onto the tab
+        // document.head.getElementsByTagName("title")[0].text = "微软 Bing 搜索 - 国际版";
 
         // If you are using console and then type dot, you can get a prompot.
         // With focus on one choice, there will have a pre-output
