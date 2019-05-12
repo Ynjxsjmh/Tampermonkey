@@ -2,7 +2,7 @@
 // @name 把 google 搜索伪装成bing搜索
 // @namespace win.somereason.web.utils
 // @version 2018.12.10.2
-// @description （百度一生黑） Honor to somereason
+// @description （百度一生黑） Honor to @somereason
 // @author Ynjxsjmh
 // @license MIT
 // @date 2018-10-05
@@ -30,6 +30,8 @@
 	if (logo === null) {
 		console.log("oops,google又改样式了.请静待更新");
 	} else {
+        logo.innerHTML = '';
+
         var image_url = "https://raw.githubusercontent.com/Ynjxsjmh/Tampermonkey/master/image/bing-green-small.png";
         var img = new Image();
         img.src = image_url;
@@ -41,9 +43,12 @@
         document.title = document.title.replace(/Google\s/g, "必应");
         // Below method has a slight delay while changing the logo
         // document.getElementById("logo").getElementsByTagName('img')[0].src = image_url;
-        document.getElementById("logo").title = "Bing 首页";
 
-        // Don't use below line, or you cound't that your input while the cursor hovering onto the tab
+        if (document.getElementById("logo") !== null) {
+            document.getElementById("logo").title = "Bing 首页";
+        }
+
+        // Don't use below line, or you cound't get your input while the cursor hovering onto the tab
         // document.head.getElementsByTagName("title")[0].text = "微软 Bing 搜索 - 国际版";
 
         // If you are using console and then type dot, you can get a prompot.
