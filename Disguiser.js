@@ -2,7 +2,7 @@
 // @name Disguiser
 // @namespace ynjxsjmh.web.utils
 // @version 2019.12.22
-// @description （百度一生黑） Honor to somereason
+// @description Honor to @somereason
 // @author Ynjxsjmh
 // @license MIT
 // @date 2018-10-05
