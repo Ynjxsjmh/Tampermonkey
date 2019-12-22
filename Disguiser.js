@@ -116,9 +116,9 @@
     function getImgSize(elLogo){
         var elImg=elLogo.querySelector("img");
         if(elImg===null){
-            return {height:30,width:92}
+            return {height:30,width:92};
         }else{
-            return {height:elImg.height,width:elImg.width}
+            return {height:elImg.height,width:elImg.width};
         }
     }
 
