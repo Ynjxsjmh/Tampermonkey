@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name Disguiser
-// @namespace win.somereason.web.utils
+// @namespace ynjxsjmh.web.utils
 // @version 2019.12.22
 // @description （百度一生黑） Honor to somereason
 // @author Ynjxsjmh
