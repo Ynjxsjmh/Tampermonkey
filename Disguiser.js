@@ -10,6 +10,8 @@
 // @match *://www.google.com.hk/search*
 // @match *://www.google.com.tw/search*
 // @match *://www.youtube.com/*
+// @match *://www.twitter.com/*
+// @match *twitter.com/*
 // @grant none
 // ==/UserScript==
 //
@@ -26,6 +28,10 @@
     case "youtube.com":
       youtube();
       break;
+    case "www.twitter.com":
+    case "twitter.com":
+      twitter();
+      break;
     case "instagram.com":
       instagram();
       break;
@@ -34,6 +40,25 @@
     }
   } catch(e){
     console.log("unknown source");
+  }
+
+  function changeIcon(href) {
+    var link = document.querySelector("link[rel*='shortcut icon']");
+    link.href = href;
+  }
+
+  function twitter() {
+    var contentSecurityPolicy = document.createElement('meta');
+    contentSecurityPolicy.httpEquiv = "Content-Security-Policy";
+    contentSecurityPolicy.content = "img-src data: 'self' blob: data: https://*.cdn.twitter.com https://ton.twitter.com https://*.twimg.com https://www.google-analytics.com https://www.periscope.tv https://www.pscp.tv https://media.riffsy.com https://*.giphy.com https://*.pscp.tv https://raw.githubusercontent.com";
+    // <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'" />
+    document.getElementsByTagName('head')[0].prepend(contentSecurityPolicy);
+
+    var headerA = document.getElementsByTagName("header")[0].getElementsByTagName("h1")[0].getElementsByTagName("a")[0];
+    headerA.innerHTML = "";
+    headerA.innerHTML = '<a href="https://www.twitter.com" data-hveid="7"><img src="https://raw.githubusercontent.com/Ynjxsjmh/Tampermonkey/master/image/weibo.png" alt="微博" data-atf="3"></a>';
+
+    changeIcon("https://raw.githubusercontent.com/Ynjxsjmh/Tampermonkey/master/image/weibo-icon.ico");
   }
 
   function youtube() {
