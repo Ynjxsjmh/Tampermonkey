@@ -8,6 +8,8 @@
 // @match        https://stackoverflow.com/?tab=*
 // @match        https://*.stackexchange.com
 // @match        https://*.stackexchange.com/?tab=*
+// @match        https://superuser.com
+// @match        https://superuser.com/?tab=*
 // @icon         https://www.google.com/s2/favicons?domain=stackoverflow.com
 // @grant        none
 // ==/UserScript==
