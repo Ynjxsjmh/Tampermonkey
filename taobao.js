@@ -118,7 +118,7 @@ function processOrder(order) {
 
             if (index === 0) {
                 let statusQuery = order.querySelector(`span[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$5.0.0.0']`);
-                var status = statusQuery.textContent;
+                var status = statusQuery.textContent.trim();
             }
 
             let itemUrl = itemUrlQuery.href;
