@@ -86,7 +86,7 @@ function processOrder(order) {
 
     let outputData = {};
     let textContent = order.textContent;
-    let pattern = /(\d{4}-\d{2}-\d{2})订单号: ()/;
+    let pattern = /(\d{4}-\d{2}-\d{2})\s+订单号: ()/;
     let isExist = pattern.exec(textContent);
 
     if (!isExist) {
