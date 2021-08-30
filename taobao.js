@@ -99,9 +99,9 @@ function processOrder(order) {
 
         while (true) {
             let productQuery = order.querySelector(`span[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$0.0.1.0.0.1']`);
-            let priceQuery = order.querySelector(`span[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$1.0.1.1']`);
+            let priceQuery = order.querySelector(`p[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$1.0.1']`);
             let countQuery = order.querySelector(`p[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$2.0.0']`);
-            let actualPayQuery = order.querySelector(`span[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$4.0.0.2.0.1']`);
+            let actualPayQuery = order.querySelector(`div[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$4.0.0.2']`);
             let itemUrlQuery = order.querySelector("a[href]");
 
             // “保险服务” 没得 count
