@@ -76,7 +76,7 @@ function addCurrentPageOrdersToList() {
 }
 
 function exportOrders() {
-    const header = ["订单号", "下单日期", "商品明细", "商品链接", "单价", "数量", "实付款", "状态"];
+    const header = ["订单号", "下单日期", "商品明细", "商品链接", "单价", "数量", "实付款", "含运费", "状态"];
 
     toCsv(header, orderList, "淘宝订单导出");
 }
@@ -102,6 +102,7 @@ function processOrder(order) {
             let priceQuery = order.querySelector(`span[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$1.0.1.1']`);
             let countQuery = order.querySelector(`p[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$2.0.0']`);
             let actualPayQuery = order.querySelector(`span[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$4.0.0.2.0.1']`);
+            let expressPayQuery = order.querySelector(`span[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$4.0.1:$0.1']`);
             let itemUrlQuery = order.querySelector("a[href]");
 
             // “保险服务” 没得 count
@@ -114,6 +115,10 @@ function processOrder(order) {
 
             if (actualPayQuery != null) {
                 var actualPay = actualPayQuery.textContent;
+            }
+
+            if (expressPayQuery != null) {
+                var expressPay = expressPayQuery.textContent;
             }
 
             if (index === 0) {
@@ -133,6 +138,7 @@ function processOrder(order) {
                 parseFloat(price),
                 count,
                 actualPay,
+                expressPay,
                 status,
             ];
         }
