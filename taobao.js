@@ -105,7 +105,8 @@ function processOrder(order) {
             let actualPayQuery = order.querySelector("span[data-reactid='.0.7:$order-" + id + ".$" + id + ".0.1:1:0.$" + index + ".$4.0.0.2.0.1']");
             let itemUrlQuery = order.querySelector("a[href]");
 
-            if (productQuery === null) {
+            // “保险服务” 没得 count
+            if (productQuery === null || countQuery === null) {
                 break;
             }
 
