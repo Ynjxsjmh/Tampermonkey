@@ -16,7 +16,7 @@
     $($(".mt h3")[0]).html($($(".mt h3")[0]).html() + "&nbsp<button id='srBtnExport' style='background-color: #e2231a;color: white;border: 0px;border-radius: 4px;'>导出本页订单</button>");
     $("#srBtnExport").click(function (e) {
         var str = getOrderListStr();
-        createAndDownloadFile("京东订单导出" + today_str  +".csv", str);
+        createAndDownloadFile("京东订单导出 " + $(".time-txt").text()  +".csv", str);
     });
 
     //获取订单
