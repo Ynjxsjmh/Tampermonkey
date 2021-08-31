@@ -30,8 +30,11 @@
             var ele = {
                 time: $(this).find(".dealtime").text(),
                 billId: $(this).find(".number").text().trim().replace(/\s+/, ""),
+                shop: $(this).find(".order-shop").text().trim(),
                 amount: $(this).next().find(".amount span:first-child").text().replace("总额", "").trim(),
                 status: $(this).next().find(".order-status").text().trim(),
+                consignee: $(this).next().find(".txt").text().trim(),
+                consigneeDetail: $(this).next().find(".pc").text().trim().replace(/\s\s+/g, ','),
             };
             //子订单的明细,可能有多个商品
             var arr = $(this).nextAll();
@@ -43,7 +46,7 @@
                 str1 += ",";
             }
             ele.title = str1;
-            str += `"${ele.billId}","${ele.time}","${ele.status}","${ele.amount}","${ele.title}"`;//输出,只支持ES6
+            str += `"${ele.billId}"\`"${ele.time}"\`"${ele.status}"\`"${ele.shop}"\`"${ele.amount}"\`"${ele.title}"\`"${ele.consignee}"\`"${ele.consigneeDetail}"`;// 输出，只支持 ES6
             str += "\n";
         });
 
