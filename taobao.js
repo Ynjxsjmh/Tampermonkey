@@ -76,7 +76,7 @@ function addCurrentPageOrdersToList() {
 }
 
 function exportOrders() {
-    const header = ["订单号", "下单日期", "商品名称", "商品明细", "商品链接", "单价", "数量", "实付款", "含运费", "状态"];
+    const header = ["订单号", "下单日期", "店铺名称", "商品名称", "商品明细", "商品链接", "单价", "数量", "实付款", "含运费", "状态"];
 
     toCsv(header, orderList, "淘宝订单导出");
 }
@@ -98,6 +98,7 @@ function processOrder(order) {
         let index = 0;
 
         while (true) {
+            let shopQuery = order.querySelector(`a[data-reactid='.0.7:$order-${id}.$${id}.0.1:0.0.1.0.1']`);
             let productQuery = order.querySelector(`span[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$0.0.1.0.0.1']`);
             let productDetailQuery = order.querySelector(`p[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$0.0.1.1']`);
             let priceQuery = order.querySelector(`p[data-reactid='.0.7:$order-${id}.$${id}.0.1:1:0.$${index}.$1.0.1']`);
@@ -139,6 +140,7 @@ function processOrder(order) {
             outputData[id + index] = [
                 id,
                 date,
+                shopQuery.textContent,
                 productQuery.textContent.replace(/,/g,"，"),
                 productDetail.replace(/,/g,"，"),
                 itemUrl,
