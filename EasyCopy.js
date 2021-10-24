@@ -9,20 +9,34 @@
 // @grant        none
 // ==/UserScript==
 
+
 function copyText(evt) {
   var val = document.querySelector(evt.currentTarget.selector);
 
-  var aux = document.createElement("div");
-  aux.setAttribute("contentEditable", true);
-  aux.innerHTML = val.innerHTML;
-  document.body.appendChild(aux);
-  window.getSelection().selectAllChildren(aux);
-  document.execCommand("copy");
-  document.body.removeChild(aux);
+  if (!navigator.clipboard) {
+    fallbackCopyText(val);
+    return;
+  } else {
+    navigator.clipboard.writeText(val.innerText).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+  }
 
   const btn = document.querySelector('#copyText');
   btn.innerHTML = 'Copied';
   setTimeout(function() { btn.innerHTML = 'Copy'; }, 3000);
+}
+
+function fallbackCopyText(ele) {
+  var aux = document.createElement("div");
+  aux.setAttribute("contentEditable", true);
+  aux.innerHTML = ele.innerHTML;
+  document.body.appendChild(aux);
+  window.getSelection().selectAllChildren(aux);
+  document.execCommand("copy");
+  document.body.removeChild(aux);
 }
 
 function cool18() {
