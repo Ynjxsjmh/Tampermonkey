@@ -10,8 +10,14 @@
 
 function copyText(evt) {
   var val = document.querySelector(evt.currentTarget.selector);
-  window.getSelection().selectAllChildren(val);
-  document.execCommand('Copy');
+
+  var aux = document.createElement("div");
+  aux.setAttribute("contentEditable", true);
+  aux.innerHTML = val.innerHTML;
+  document.body.appendChild(aux);
+  window.getSelection().selectAllChildren(aux);
+  document.execCommand("copy");
+  document.body.removeChild(aux);
 
   const btn = document.querySelector('#copyText');
   btn.innerHTML = 'Copied';
