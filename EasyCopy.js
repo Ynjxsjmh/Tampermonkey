@@ -73,6 +73,23 @@ function sis001() {
 }
 
 function v2ex() {
+
+  // Handle post
+  var post = document.querySelector('#Main .box');
+  var title = post.querySelector('h1').innerText;
+  var author = post.querySelector('.gray a').innerText;
+  var date = post.querySelector('.gray span').title;
+  var content = post.querySelector('.topic_content').innerText;
+
+  var btn = document.createElement('button');
+  btn.innerHTML = 'Copy';
+  btn.setAttribute('id', 'copyText');
+  btn.addEventListener('click', copyText, false);
+  btn.copiedText = `${title}\n${author}\t${date}\n${content}`;
+  const anchor = post.querySelector('.gray');
+  anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+
+  // Handle reply
   const anchors = document.querySelectorAll('#Main .box .cell');
 
   for (var i = 0; i < anchors.length; i++){
