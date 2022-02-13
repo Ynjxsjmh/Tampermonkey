@@ -84,7 +84,12 @@ function v2ex() {
     btn.addEventListener('click', copyText, false);
 
     if (anchor) {
-      btn.copiedText = anchors[i].querySelector('.reply_content').innerText;
+      var author = anchors[i].querySelector('.dark').innerText;
+      var date = anchors[i].querySelector('.ago').innerText;
+      var like = anchors[i].querySelector('.small') ? ('❤' + anchors[i].querySelector('.small').innerText.trim()) : '';
+      var floor = anchors[i].querySelector('.fr .no').innerText;
+      var content = anchors[i].querySelector('.reply_content').innerText;
+      btn.copiedText = `${author}\t${date}\t${like}\t#${floor}\n${content}`;
       anchor.parentNode.insertBefore(btn, anchor.nextSibling);
     }
   }
