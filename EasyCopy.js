@@ -115,6 +115,7 @@ function addBtn() {
       throw TypeError;
     }
   } catch(e){
+    console.log(e);
     console.log("unknown source");
   }
 }
