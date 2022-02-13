@@ -6,6 +6,7 @@
 // @author       Ynjxsjmh
 // @match        *.cool18.com/bbs4/*
 // @match        *.sis001.com/forum/*
+// @match        *.v2ex.com/t/*
 // @grant        none
 // ==/UserScript==
 
@@ -71,6 +72,25 @@ function sis001() {
   }
 }
 
+function v2ex() {
+  const anchors = document.querySelectorAll('#Main .box .cell');
+
+  for (var i = 0; i < anchors.length; i++){
+    const anchor = anchors[i].querySelector('.fr .no');
+
+    var btn = document.createElement('button');
+    btn.innerHTML = 'Copy';
+    btn.setAttribute('id', `copyText${i}`);
+    btn.addEventListener('click', copyText, false);
+
+    if (anchor) {
+      btn.copiedText = anchors[i].querySelector('.reply_content').innerText;
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+    }
+  }
+}
+
+
 function addBtn() {
   try{
     switch(window.location.hostname){
@@ -81,6 +101,10 @@ function addBtn() {
     case "www.sis001.com":
     case "sis001.com":
       sis001();
+      break;
+    case "www.v2ex.com":
+    case "v2ex.com":
+      v2ex();
       break;
     default:
       throw TypeError;
