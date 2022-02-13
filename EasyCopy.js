@@ -11,13 +11,13 @@
 
 
 function copyText(evt) {
-  var val = document.querySelector(evt.currentTarget.selector);
+  var text = evt.currentTarget.copiedText;
 
   if (!navigator.clipboard) {
-    fallbackCopyText(val);
+    fallbackCopyText(text);
     return;
   } else {
-    navigator.clipboard.writeText(val.innerText).then(function() {
+    navigator.clipboard.writeText(text).then(function() {
       console.log('Async: Copying to clipboard was successful!');
     }, function(err) {
       console.error('Async: Could not copy text: ', err);
@@ -29,10 +29,10 @@ function copyText(evt) {
   setTimeout(function() { btn.innerHTML = 'Copy'; }, 3000);
 }
 
-function fallbackCopyText(ele) {
+function fallbackCopyText(text) {
   var aux = document.createElement("div");
   aux.setAttribute("contentEditable", true);
-  aux.innerHTML = ele.innerHTML;
+  aux.innerHTML = text;
   document.body.appendChild(aux);
   window.getSelection().selectAllChildren(aux);
   document.execCommand("copy");
