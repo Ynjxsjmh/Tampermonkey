@@ -24,7 +24,7 @@ function copyText(evt) {
     });
   }
 
-  const btn = document.querySelector('#copyText');
+  const btn = evt.currentTarget;
   btn.innerHTML = 'Copied';
   setTimeout(function() { btn.innerHTML = 'Copy'; }, 3000);
 }
