@@ -4,8 +4,8 @@
 // @version      0.1
 // @description  Add copy button to some sites
 // @author       Ynjxsjmh
-// @match        https://www.sis001.com/forum/*
 // @match        *.cool18.com/bbs4/*
+// @match        *.sis001.com/forum/*
 // @grant        none
 // ==/UserScript==
 
@@ -63,7 +63,7 @@ function sis001() {
     btn.innerHTML = 'Copy';
     btn.setAttribute('id', 'copyText');
     btn.addEventListener('click', copyText, false);
-    btn.selector = '.postcontent .noSelect';
+    btn.copiedText = document.querySelector('.postcontent .noSelect').innerText;
 
     if (anchor) {
       anchor.parentNode.insertBefore(btn, anchor.nextSibling);
