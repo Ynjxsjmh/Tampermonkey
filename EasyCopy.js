@@ -99,6 +99,15 @@ function v2ex() {
     btn.innerHTML = 'Copy';
     btn.setAttribute('id', `copyText${i}`);
     btn.addEventListener('click', copyText, false);
+    btn.style.display = 'none';
+
+    anchors[i].onmouseover = function() {
+      this.getElementsByTagName('button')[0].style.display = 'block';
+    };
+
+    anchors[i].onmouseout = function() {
+      this.getElementsByTagName('button')[0].style.display = 'none';
+    };
 
     if (anchor) {
       var author = anchors[i].querySelector('.dark').innerText;
