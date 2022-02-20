@@ -148,7 +148,7 @@ function zhct() {
       var lines = transaction.childNodes;
 
       const time = lines[lines.length-1].innerText;
-      const item = lines[0].innerText.split('\n').slice(0, 2).join(' ');
+      const item = lines[0].innerText.split('\n').slice(0, 2).join(',');
       const price = lines[0].innerText.split('\n')[2];
       // 交易时间|商户名称|交易名称|交易金额
       text += `${time}\t${restaurant}\t${item}\t${price}\n`;
