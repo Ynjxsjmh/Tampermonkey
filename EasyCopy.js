@@ -172,9 +172,9 @@ function douban () {
     get: (searchParams, prop) => searchParams.get(prop),
   });
 
-  var start = params.start;
+  var start = params.start ? Number(params.start) : 0;
 
-  if (start === undefined || start < 100) {
+  if (start < 100) {
     // Handle post
     var anchor = document.querySelector('.create-time');
 
@@ -191,6 +191,7 @@ function douban () {
 
   // Handle reply
   const comments = document.querySelectorAll('li[class*="comment-item"]');
+  var floor = start + 1;
 
   for (var i = 0; i < comments.length; i++) {
     const comment = comments[i];
@@ -207,7 +208,7 @@ function douban () {
     var quoteContent = quote ? quote.innerText : '';
     var content = comment.querySelector('.reply-content').innerText;
 
-    btn.copiedText = `${info}\t${like}\n${quoteContent}\n${content}`;
+    btn.copiedText = `${info}\t${like}\t#${floor}\n${quoteContent}\n${content}`;
 
     anchor = comment.querySelector('.lnk-reply');
     anchor.parentNode.insertBefore(btn, anchor.nextSibling);
@@ -219,6 +220,11 @@ function douban () {
     comment.onmouseout = function() {
       this.querySelector('button').style.display = 'none';
     };
+
+    if (!comment.parentNode.id.includes('popular')) {
+      comment.querySelector('h4').innerHTML += `<span style="float: right">#${floor}</span>`;
+      floor += 1;
+    }
   }
 }
 
