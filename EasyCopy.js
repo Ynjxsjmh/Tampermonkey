@@ -199,7 +199,7 @@ function douban () {
 
     btn.copiedText = `${info}\t${like}\n${quoteContent}\n${content}`;
 
-    anchor = comment.querySelector('.pubtime');
+    anchor = comment.querySelector('.lnk-reply');
     anchor.parentNode.insertBefore(btn, anchor.nextSibling);
 
     comment.onmouseover = function() {
