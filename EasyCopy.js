@@ -19,8 +19,9 @@ function copyText(evt) {
   }
 
   if (!navigator.clipboard) {
-    fallbackCopyText(text);
-    return;
+    fallbackCopyText(text)
+      .then(() => console.log('Copying to clipboard was successful!'))
+      .catch((err) => console.log('Could not copy text: ', err));
   } else {
     navigator.clipboard.writeText(text).then(function() {
       console.log('Async: Copying to clipboard was successful!');
@@ -35,13 +36,22 @@ function copyText(evt) {
 }
 
 function fallbackCopyText(text) {
-  var aux = document.createElement("div");
-  aux.setAttribute("contentEditable", true);
-  aux.innerHTML = text;
-  document.body.appendChild(aux);
-  window.getSelection().selectAllChildren(aux);
-  document.execCommand("copy");
-  document.body.removeChild(aux);
+  // text area method
+  let textArea = document.createElement("textarea");
+  textArea.value = text;
+
+  // make the textarea out of viewport
+  textArea.style.position = "fixed";
+  textArea.style.left = "-999999px";
+  textArea.style.top = "-999999px";
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  return new Promise((res, rej) => {
+    document.execCommand('copy') ? res() : rej();
+    textArea.remove();
+  });
 }
 
 function cool18() {
