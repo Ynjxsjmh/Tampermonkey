@@ -168,16 +168,26 @@ function zhct() {
 }
 
 function douban () {
-  // Handle post
-  var anchor = document.querySelector('.create-time');
+  const params = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+  });
 
-  var btn = document.createElement('button');
-  btn.innerHTML = 'Copy';
-  btn.setAttribute('id', 'copyText');
-  btn.addEventListener('click', copyText, false);
-  btn.copyTextFun = () => { document.querySelector('.rich-content').textContent.trim(); };
+  var start = params.start;
 
-  anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+  if (start === undefined || start < 100) {
+    // Handle post
+    var anchor = document.querySelector('.create-time');
+
+    var btn = document.createElement('button');
+    btn.innerHTML = 'Copy';
+    btn.setAttribute('id', 'copyText');
+    btn.addEventListener('click', copyText, false);
+    btn.copyTextFun = () => { document.querySelector('.rich-content').textContent.trim(); };
+
+    if (anchor) {
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+    }
+  }
 
   // Handle reply
   const comments = document.querySelectorAll('li[class*="comment-item"]');
