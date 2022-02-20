@@ -205,7 +205,7 @@ function douban () {
     var info = comment.querySelector('h4').innerText;
     var like = comment.querySelector('.comment-vote').innerText;
     var quote = comment.querySelector('.reply-quote');
-    var quoteContent = quote ? quote.innerText : '';
+    var quoteContent = quote ? '> ' + quote.innerText : '';
     var content = comment.querySelector('.reply-content').innerText;
 
     btn.copiedText = `${info}\t${like}\t#${floor}\n${quoteContent}\n${content}`;
