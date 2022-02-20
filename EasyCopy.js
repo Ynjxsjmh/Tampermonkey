@@ -13,6 +13,10 @@
 
 function copyText(evt) {
   var text = evt.currentTarget.copiedText;
+  if (text === null || text === undefined || text === '') {
+    var copyTextFun = evt.currentTarget.copyTextFun;
+    text = copyTextFun();
+  }
 
   if (!navigator.clipboard) {
     fallbackCopyText(text);
