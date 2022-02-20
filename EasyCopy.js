@@ -135,6 +135,36 @@ function v2ex() {
   }
 }
 
+function zhct() {
+  const anchor = document.getElementById('nutrient');
+
+  const getText = () => {
+    const restaurant = document.getElementById('store_name').innerText;
+    var text = '';
+    const transactions = document.querySelectorAll("#lines > div");
+    for (let i = 0; i < transactions.length; i++) {
+      var transaction = transactions[i].querySelector("div");
+      var lines = transaction.childNodes;
+
+      const time = lines[lines.length-1].innerText;
+      const item = lines[0].innerText.split('\n').slice(0, 2).join(' ');
+      const price = lines[0].innerText.split('\n')[2];
+      // 交易时间|商户名称|交易名称|交易金额
+      text += `${time}\t${restaurant}\t${item}\t${price}\n`;
+    }
+    return text;
+  };
+
+  var btn = document.createElement('button');
+  btn.innerHTML = 'Copy';
+  btn.setAttribute('id', 'copyText');
+  btn.addEventListener('click', copyText, false);
+  btn.copyTextFun = getText;
+
+  if (anchor) {
+    anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+  }
+}
 
 function addBtn() {
   try{
