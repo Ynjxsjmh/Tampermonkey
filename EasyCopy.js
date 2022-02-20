@@ -7,6 +7,7 @@
 // @match        *.cool18.com/bbs4/*
 // @match        *.sis001.com/forum/*
 // @match        *.v2ex.com/t/*
+// @match        *.douban.com/group/topic/*
 // @grant        none
 // ==/UserScript==
 
@@ -166,6 +167,51 @@ function zhct() {
   }
 }
 
+function douban () {
+  // Handle post
+  var anchor = document.querySelector('.create-time');
+
+  var btn = document.createElement('button');
+  btn.innerHTML = 'Copy';
+  btn.setAttribute('id', 'copyText');
+  btn.addEventListener('click', copyText, false);
+  btn.copyTextFun = () => { document.querySelector('.rich-content').textContent.trim(); };
+
+  anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+
+  // Handle reply
+  const comments = document.querySelectorAll('li[class*="comment-item"]');
+
+  for (var i = 0; i < comments.length; i++) {
+    const comment = comments[i];
+
+    btn = document.createElement('button');
+    btn.innerHTML = 'Copy';
+    btn.setAttribute('id', `copyText${i}`);
+    btn.addEventListener('click', copyText, false);
+    btn.style.display = 'none';
+
+    var info = comment.querySelector('h4').innerText;
+    var like = comment.querySelector('.comment-vote').innerText;
+    var quote = comment.querySelector('.reply-quote');
+    var quoteContent = quote ? quote.innerText : '';
+    var content = comment.querySelector('.reply-content').innerText;
+
+    btn.copiedText = `${info}\t${like}\n${quoteContent}\n${content}`;
+
+    anchor = comment.querySelector('.pubtime');
+    anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+
+    comment.onmouseover = function() {
+      this.querySelector('button').style.display = 'block';
+    };
+
+    comment.onmouseout = function() {
+      this.querySelector('button').style.display = 'none';
+    };
+  }
+}
+
 function addBtn() {
   try{
     switch(window.location.hostname){
@@ -180,6 +226,10 @@ function addBtn() {
     case "www.v2ex.com":
     case "v2ex.com":
       v2ex();
+      break;
+    case "www.douban.com":
+    case "douban.com":
+      douban();
       break;
     default:
       throw TypeError;
