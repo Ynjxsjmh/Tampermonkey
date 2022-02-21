@@ -183,7 +183,11 @@ function douban () {
     btn.setAttribute('id', 'copyText');
     btn.setAttribute('class', 'owner-icon');
     btn.addEventListener('click', copyText, false);
-    btn.copyTextFun = () => { return document.querySelector('.rich-content').innerText.trim(); };
+    btn.copyTextFun = () => {
+      var info = Array.from(document.querySelectorAll('h3 span')).map(span => span.innerText).join('\t');
+      var content = document.querySelector('.rich-content').innerText.trim();
+      return `${info}\n\n${content}`;
+    };
 
     if (anchor) {
       anchor.parentNode.insertBefore(btn, anchor.nextSibling);
