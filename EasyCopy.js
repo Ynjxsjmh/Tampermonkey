@@ -196,9 +196,10 @@ function douban () {
   for (var i = 0; i < comments.length; i++) {
     const comment = comments[i];
 
-    btn = document.createElement('button');
+    btn = document.createElement('a');
     btn.innerHTML = 'Copy';
     btn.setAttribute('id', `copyText${i}`);
+    btn.setAttribute('class', `copyText`);
     btn.addEventListener('click', copyText, false);
     btn.style.display = 'none';
 
@@ -214,11 +215,11 @@ function douban () {
     anchor.parentNode.insertBefore(btn, anchor.nextSibling);
 
     comment.onmouseover = function() {
-      this.querySelector('button').style.display = 'block';
+      this.querySelector('.copyText').style.display = 'block';
     };
 
     comment.onmouseout = function() {
-      this.querySelector('button').style.display = 'none';
+      this.querySelector('.copyText').style.display = 'none';
     };
 
     if (!comment.parentNode.id.includes('popular')) {
