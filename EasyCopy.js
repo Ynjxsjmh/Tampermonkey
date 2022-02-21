@@ -181,6 +181,7 @@ function douban () {
     var btn = document.createElement('button');
     btn.innerHTML = 'Copy';
     btn.setAttribute('id', 'copyText');
+    btn.setAttribute('class', 'owner-icon');
     btn.addEventListener('click', copyText, false);
     btn.copyTextFun = () => { return document.querySelector('.rich-content').innerText.trim(); };
 
