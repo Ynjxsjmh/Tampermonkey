@@ -117,7 +117,7 @@ function v2ex() {
     btn.style.display = 'none';
 
     anchors[i].onmouseover = function() {
-      this.getElementsByTagName('button')[0].style.display = 'block';
+      this.getElementsByTagName('button')[0].style.display = 'inline';
     };
 
     anchors[i].onmouseout = function() {
@@ -131,7 +131,7 @@ function v2ex() {
       var floor = anchors[i].querySelector('.fr .no').innerText;
       var content = anchors[i].querySelector('.reply_content').innerText;
       btn.copiedText = `${author}\t${date}\t${like}\t#${floor}\n${content}`;
-      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+      anchor.parentNode.insertBefore(btn, anchor);
     }
   }
 }
