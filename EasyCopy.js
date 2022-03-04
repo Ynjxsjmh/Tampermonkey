@@ -8,6 +8,7 @@
 // @match        *.sis001.com/forum/*
 // @match        *.v2ex.com/t/*
 // @match        *.douban.com/group/topic/*
+// @match        *.zhihu.com/question/*
 // @grant        none
 // ==/UserScript==
 
@@ -234,6 +235,37 @@ function douban () {
   }
 }
 
+function zhihuQuestion() {
+  const answers = document.querySelectorAll('#QuestionAnswers-answers .List-item');
+
+  for (var i = 0; i < answers.length; i++){
+    var btn = document.createElement('button');
+    btn.innerHTML = 'Copy';
+    btn.setAttribute('id', `copyText${i}`);
+    btn.setAttribute('class', 'Button Button--plain');
+    btn.addEventListener('click', copyText, false);
+    btn.style.display = 'none';
+
+    answers[i].onmouseover = function() {
+      this.getElementsByTagName('button')[0].style.display = 'inline';
+    };
+
+    answers[i].onmouseout = function() {
+      this.getElementsByTagName('button')[0].style.display = 'none';
+    };
+
+    var author = answers[i].querySelector('.AuthorInfo-name').textContent;
+    var date = answers[i].querySelector('.ContentItem-time span').getAttribute('data-tooltip');
+    var like = answers[i].querySelector('.VoteButton--up').getAttribute('aria-label').trim();
+    var link = answers[i].querySelector('.ContentItem-time a').href;
+    var content = answers[i].querySelector('.RichContent-inner .RichText').innerText;
+    btn.copiedText = `${author}\t${date}\t${like}\n${content}\n\n原文链接: ${link}`;
+
+    const anchor = answers[i].querySelector('.AnswerItem-authorInfo .AuthorInfo');
+    anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+  }
+}
+
 function addBtn() {
   try{
     switch(window.location.hostname){
@@ -252,6 +284,10 @@ function addBtn() {
     case "www.douban.com":
     case "douban.com":
       douban();
+      break;
+    case "www.zhihu.com":
+    case "zhihu.com":
+      zhihuQuestion();
       break;
     default:
       throw TypeError;
