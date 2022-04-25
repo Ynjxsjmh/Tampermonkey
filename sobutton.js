@@ -6,6 +6,7 @@
 // @author       Ynjxsjmh
 // @match        https://stackoverflow.com/
 // @match        https://stackoverflow.com/?tab=*
+// @match        https://stackoverflow.com/search*
 // @match        https://*.stackexchange.com
 // @match        https://*.stackexchange.com/?tab=*
 // @match        https://superuser.com
@@ -14,16 +15,23 @@
 // @grant        none
 // ==/UserScript==
 
-(function() {
+function addTab () {
     var btnGroup = document.getElementsByClassName('s-btn-group')[0];
     var btns = btnGroup.getElementsByTagName('a');
 
     for (var tab of btns) {
-        const targetUrl = `https://${window.location.hostname}/?tab=${tab.getAttribute('data-value')}`;
+        var url = new URL(window.location.href);
+        url.searchParams.set('tab', tab.getAttribute('data-value'));
+        const targetUrl = (' ' + url).slice(1);
 
         tab.onclick = function() {
             window.location = targetUrl;
             return false;
         };
+
     }
-})();
+}
+
+window.addEventListener('load', function() {
+    addTab();
+}, false);
