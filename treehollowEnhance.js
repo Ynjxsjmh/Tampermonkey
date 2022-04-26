@@ -24,6 +24,7 @@
   GM_addStyle(css);
 
   // 原始数据
+  let rawData = '';
   let originalreplyList = [];
 
   // 通知信息
@@ -112,6 +113,7 @@
           if (xhr.responseURL.includes("holes/detail")) {
             //do something!
 
+            rawData = xhr.response;
             originalreplyList = JSON.parse(xhr.response).replies;
             if (!originalreplyList?.length) {
               originalreplyList = [];
@@ -329,6 +331,16 @@
     targetNode[0].scrollTo({ x: 5, y: 5, animated: true });
   };
 
+  const download = () => {
+    let blob = new Blob(["\ufeff" +rawData],{type: "application/json;charset=utf-8;"});
+    let encodedUrl = URL.createObjectURL(blob);
+    let url = document.createElement("a");
+    url.setAttribute("href", encodedUrl);
+    url.setAttribute("download", JSON.parse(rawData)["pid"] + ".json");
+    document.body.appendChild(url);
+    url.click();
+  };
+
   // removeButton();
   // if (window.location.pathname == "/HoleDetail") {
   //   getOriginalData();
@@ -384,6 +396,7 @@
         addButton("只看洞主", clickDZ);
         addButton("下载图片", addImgWindow);
         addButton("回到顶部", goTop);
+        addButton("下载数据", download);
       });
     }
   });
@@ -400,6 +413,7 @@
         addButton("只看洞主", clickDZ);
         addButton("下载图片", addImgWindow);
         addButton("回到顶部", goTop);
+        addButton("下载数据", download);
       });
     }
   });
