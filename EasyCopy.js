@@ -160,9 +160,9 @@ function sis001() {
 
     var btn = document.createElement('button');
     btn.innerHTML = 'Copy';
-    btn.setAttribute('id', 'copyText');
+    btn.setAttribute('id', `copyText${i}`);
     btn.addEventListener('click', copyText, false);
-    btn.copiedText = document.querySelector('.postcontent .noSelect').innerText;
+    btn.copiedText = anchors[i].querySelector('.postcontent .noSelect').innerText;
 
     if (anchor) {
       anchor.parentNode.insertBefore(btn, anchor.nextSibling);
