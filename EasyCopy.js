@@ -158,7 +158,7 @@ function sis001() {
   for (var i = 0; i < anchors.length; i++){
     const anchor = anchors[i].querySelector('.postcontent .postinfo a');
 
-    var btn = document.createElement('button');
+    var btn = document.createElement('a');
     btn.innerHTML = 'Copy';
     btn.setAttribute('id', `copyText${i}`);
     btn.addEventListener('click', copyText, false);
