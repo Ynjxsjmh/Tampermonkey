@@ -9,6 +9,7 @@
 // @match        *.v2ex.com/t/*
 // @match        *.douban.com/group/topic/*
 // @match        *.zhihu.com/question/*
+// @match        *.query.1234567.com.cn/Query/Detail*
 // @require      https://code.jquery.com/jquery-3.6.0.slim.min.js
 // @grant        none
 // ==/UserScript==
@@ -357,6 +358,32 @@ function addZhihuQuestion() {
   waitForKeyElements("#QuestionAnswers-answers .List-item", addButton);
 }
 
+function addEastMoney() {
+  const anchor = (Array.from(document.querySelectorAll('div.ui-confirm h3'))
+                  .find(el => el.textContent === '确认信息'));
+
+  var table = anchor.parentNode.querySelector('table');
+  var rows = table.querySelectorAll('tbody tr');
+  var cells = rows[0].querySelectorAll('td');
+
+  // Extract the values from the cells
+  var date = cells[0].textContent;
+  var netValue = cells[4].textContent;
+  var netCost = cells[5].textContent;
+  var shares = cells[6].textContent;
+  var fee = cells[7].textContent;
+
+  var btn = document.createElement('button');
+  btn.innerHTML = 'Copy';
+  btn.setAttribute('id', 'copyText');
+  btn.addEventListener('click', copyText, false);
+  btn.copiedText = `${date},${netValue},${netCost},${shares},${fee}`;
+
+  if (anchor) {
+    anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+  }
+}
+
 function addBtn() {
   try{
     switch(window.location.hostname){
@@ -379,6 +406,9 @@ function addBtn() {
     case "www.zhihu.com":
     case "zhihu.com":
       addZhihuQuestion();
+      break;
+    case "query.1234567.com.cn":
+      addEastMoney();
       break;
     default:
       throw TypeError;
