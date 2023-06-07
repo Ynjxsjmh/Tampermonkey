@@ -138,7 +138,7 @@ function waitForKeyElements (
 }
 
 
-function cool18() {
+function addCool18() {
   const anchor = document.querySelector('button');
 
   var btn = document.createElement('button');
@@ -152,7 +152,7 @@ function cool18() {
   }
 }
 
-function sis001() {
+function addSis001() {
   const anchors = document.querySelectorAll('.mainbox.viewthread');
 
   for (var i = 0; i < anchors.length; i++){
@@ -170,7 +170,7 @@ function sis001() {
   }
 }
 
-function v2ex() {
+function addV2ex() {
 
   // Handle post
   var post = document.querySelector('#Main .box');
@@ -219,7 +219,7 @@ function v2ex() {
   }
 }
 
-function zhct() {
+function addZhct() {
   const anchor = document.getElementById('nutrient');
 
   const getText = () => {
@@ -250,7 +250,7 @@ function zhct() {
   }
 }
 
-function douban () {
+function addDouban () {
   const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
   });
@@ -317,7 +317,7 @@ function douban () {
   }
 }
 
-function zhihuQuestion() {
+function addZhihuQuestion() {
   const addButton = () => {
     const answers = document.querySelectorAll('#QuestionAnswers-answers .List-item');
 
@@ -362,23 +362,23 @@ function addBtn() {
     switch(window.location.hostname){
     case "www.cool18.com":
     case "cool18.com":
-      cool18();
+      addCool18();
       break;
     case "www.sis001.com":
     case "sis001.com":
-      sis001();
+      addSis001();
       break;
     case "www.v2ex.com":
     case "v2ex.com":
-      v2ex();
+      addV2ex();
       break;
     case "www.douban.com":
     case "douban.com":
-      douban();
+      addDouban();
       break;
     case "www.zhihu.com":
     case "zhihu.com":
-      zhihuQuestion();
+      addZhihuQuestion();
       break;
     default:
       throw TypeError;
