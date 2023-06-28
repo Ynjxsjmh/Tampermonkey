@@ -6,6 +6,7 @@
 // @author Ynjxsjmh
 // @license MIT
 // @date 2018-10-05
+// @match *://www.bing.com/*
 // @match *://www.google.com/search*
 // @match *://www.google.com.hk/search*
 // @match *://www.google.com.tw/search*
@@ -19,6 +20,10 @@
 (function () {
   try{
     switch(window.location.hostname){
+    case "www.bing.com":
+    case "bing.com":
+      bing();
+      break;
     case "www.google.com":
     case "www.google.com.hk":
     case "www.google.com.tw":
@@ -40,6 +45,12 @@
     }
   } catch(e){
     console.log("unknown source");
+  }
+
+  function bing() {
+    var logo = document.getElementsByClassName('b_logoArea')[0];
+    logo.innerHTML = "";
+    logo.innerHTML = '<img src="https://raw.githubusercontent.com/Ynjxsjmh/Tampermonkey/master/image/bing-green-small.png" alt="Bing">';
   }
 
   function changeIcon(href) {
