@@ -394,7 +394,8 @@ function addSouthPlus() {
   const anchors = document.querySelectorAll('div.t5.t2 tr.tr1:not(.r_one)');
 
   for (var i = 0; i < anchors.length; i++) {
-    var btn = createBtn(`copyText${i}`);
+    var btnId = `copyText${i}`;
+    var btn = createBtn(btnId, 'a');
 
     const anchor = anchors[i].querySelector('.tiptop .fr a');
 
@@ -407,14 +408,17 @@ function addSouthPlus() {
       anchor.parentNode.insertBefore(btn, anchor);
     }
 
-    anchors[i].onmouseover = function() {
-      this.querySelector('button').style.display = 'inline';
-    };
+    anchors[i].onmouseover = (function(id) {
+      return function() {
+        this.querySelector(`#${id}`).style.display = 'inline';
+      };
+    })(btnId);
 
-    anchors[i].onmouseout = function() {
-      this.querySelector('button').style.display = 'none';
-    };
-
+    anchors[i].onmouseout = (function(id) {
+      return function() {
+        this.querySelector(`#${id}`).style.display = 'none';
+      };
+    })(btnId);
   }
 
 }
