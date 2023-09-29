@@ -10,6 +10,7 @@
 // @match        *.douban.com/group/topic/*
 // @match        *.zhihu.com/question/*
 // @match        *.query.1234567.com.cn/Query/Detail*
+// @match        *.*zhct.*/weixin/orderdetail/*
 // @require      https://code.jquery.com/jquery-3.6.0.slim.min.js
 // @grant        none
 // ==/UserScript==
