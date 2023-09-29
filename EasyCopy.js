@@ -206,14 +206,6 @@ function addV2ex() {
     btn.addEventListener('click', copyText, false);
     btn.style.display = 'none';
 
-    anchors[i].onmouseover = function() {
-      this.getElementsByTagName('button')[0].style.display = 'inline';
-    };
-
-    anchors[i].onmouseout = function() {
-      this.getElementsByTagName('button')[0].style.display = 'none';
-    };
-
     if (anchor) {
       var author = anchors[i].querySelector('.dark').innerText;
       var date = anchors[i].querySelector('.ago').innerText;
@@ -223,6 +215,14 @@ function addV2ex() {
       btn.copiedText = `${author}\t${date}\t${like}\t#${floor}\n${content}`;
       anchor.parentNode.insertBefore(btn, anchor);
     }
+
+    anchors[i].onmouseover = function() {
+      this.getElementsByTagName('button')[0].style.display = 'inline';
+    };
+
+    anchors[i].onmouseout = function() {
+      this.getElementsByTagName('button')[0].style.display = 'none';
+    };
   }
 }
 
