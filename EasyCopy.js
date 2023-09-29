@@ -118,7 +118,7 @@ function waitForKeyElements (
     if (btargetsFound  &&  bWaitOnce  &&  timeControl) {
         //--- The only condition where we need to clear the timer.
         clearInterval (timeControl);
-        delete controlObj [controlKey]
+        delete controlObj [controlKey];
     }
     else {
         //--- Set a timer, if needed.
