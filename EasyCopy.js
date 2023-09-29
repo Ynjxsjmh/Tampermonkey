@@ -178,7 +178,11 @@ function addV2ex() {
   var title = post.querySelector('h1').innerText;
   var author = post.querySelector('.gray a').innerText;
   var date = post.querySelector('.gray span').title;
-  var content = post.querySelector('.topic_content').innerText;
+  var topic_content = post.querySelector('.topic_content');
+  var content = "[作者未添加正文]";
+  if (topic_content !== null) {
+    content = topic_content.innerText;
+  }
 
   var btn = document.createElement('button');
   btn.innerHTML = 'Copy';
