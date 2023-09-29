@@ -465,11 +465,10 @@ function addBtn() {
       addSouthPlus();
       break;
     default:
-      throw TypeError;
+      throw new Error('undefined source');
     }
   } catch(e){
-    console.log(e);
-    console.log("unknown source");
+    console.error(e);
   }
 }
 
