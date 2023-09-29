@@ -419,8 +419,8 @@ function addSouthPlus() {
 
 }
 
-function createBtn(id) {
-  var btn = document.createElement('button');
+function createBtn(id='copyText', ele='button') {
+  var btn = document.createElement(ele);
 
   btn.innerHTML = 'Copy';
   btn.setAttribute('id', id);
