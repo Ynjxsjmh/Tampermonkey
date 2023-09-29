@@ -11,6 +11,7 @@
 // @match        *.zhihu.com/question/*
 // @match        *.query.1234567.com.cn/Query/Detail*
 // @match        *.*zhct.*/weixin/orderdetail/*
+// @match        *.south-plus.org/read.php*
 // @require      https://code.jquery.com/jquery-3.6.0.slim.min.js
 // @grant        none
 // ==/UserScript==
@@ -389,6 +390,46 @@ function addEastMoney() {
   }
 }
 
+function addSouthPlus() {
+  const anchors = document.querySelectorAll('div.t5.t2 tr.tr1:not(.r_one)');
+
+  for (var i = 0; i < anchors.length; i++) {
+    var btn = createBtn(`copyText${i}`);
+
+    const anchor = anchors[i].querySelector('.tiptop .fr a');
+
+    if (anchor) {
+      var author = anchors[i].querySelector('th > div:nth-child(2) a').innerText;
+      var date = anchors[i].querySelector('.tiptop .fl.gray').innerText;
+      var floor = anchors[i].querySelector('.tiptop .fl .s3').innerText;
+      var content = anchors[i].querySelector('.tpc_content').innerText.trim();
+      btn.copiedText = `${author}\t${date}\t#${floor}\n${content}`;
+      anchor.parentNode.insertBefore(btn, anchor);
+    }
+
+    anchors[i].onmouseover = function() {
+      this.querySelector('button').style.display = 'inline';
+    };
+
+    anchors[i].onmouseout = function() {
+      this.querySelector('button').style.display = 'none';
+    };
+
+  }
+
+}
+
+function createBtn(id) {
+  var btn = document.createElement('button');
+
+  btn.innerHTML = 'Copy';
+  btn.setAttribute('id', id);
+  btn.addEventListener('click', copyText, false);
+  btn.style.display = 'none';
+
+  return btn;
+}
+
 function addBtn() {
   try{
     switch(window.location.hostname){
@@ -414,6 +455,10 @@ function addBtn() {
       break;
     case "query.1234567.com.cn":
       addEastMoney();
+      break;
+    case "www.south-plus.org":
+    case "south-plus.org":
+      addSouthPlus();
       break;
     default:
       throw TypeError;
