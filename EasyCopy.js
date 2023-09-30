@@ -17,6 +17,24 @@
 // ==/UserScript==
 
 
+var copiedTextArray = [];
+function appendText(evt) {
+  var text = evt.currentTarget.copiedText;
+  if (text === null || text === undefined || text === '') {
+    var copyTextFun = evt.currentTarget.copyTextFun;
+    text = copyTextFun();
+  }
+
+  copiedTextArray.push(text);
+  text = copiedTextArray.join('\n\n');
+
+  writeClipboard(text);
+
+  const btn = evt.currentTarget;
+  btn.innerHTML = 'Appended';
+  setTimeout(function() { btn.innerHTML = 'Append'; }, 3000);
+}
+
 function copyText(evt) {
   var text = evt.currentTarget.copiedText;
   if (text === null || text === undefined || text === '') {
@@ -24,6 +42,14 @@ function copyText(evt) {
     text = copyTextFun();
   }
 
+  writeClipboard(text);
+
+  const btn = evt.currentTarget;
+  btn.innerHTML = 'Copied';
+  setTimeout(function() { btn.innerHTML = 'Copy'; }, 3000);
+}
+
+function writeClipboard(text) {
   if (!navigator.clipboard) {
     fallbackCopyText(text)
       .then(() => console.log('Copying to clipboard was successful!'))
@@ -35,10 +61,6 @@ function copyText(evt) {
       console.error('Async: Could not copy text: ', err);
     });
   }
-
-  const btn = evt.currentTarget;
-  btn.innerHTML = 'Copied';
-  setTimeout(function() { btn.innerHTML = 'Copy'; }, 3000);
 }
 
 function fallbackCopyText(text) {
@@ -173,8 +195,7 @@ function addSis001() {
   }
 }
 
-function addV2ex() {
-
+function copyV2ex() {
   // Handle post
   var post = document.querySelector('#Main .box');
   var title = post.querySelector('h1').innerText;
@@ -197,12 +218,13 @@ function addV2ex() {
   // Handle reply
   const anchors = document.querySelectorAll('#Main .box .cell');
 
-  for (var i = 0; i < anchors.length; i++){
+  for (var i = 0; i < anchors.length; i++) {
     const anchor = anchors[i].querySelector('.fr .no');
 
+    var btnId = `copyText${i}`;
     var btn = document.createElement('button');
     btn.innerHTML = 'Copy';
-    btn.setAttribute('id', `copyText${i}`);
+    btn.setAttribute('id', btnId);
     btn.addEventListener('click', copyText, false);
     btn.style.display = 'none';
 
@@ -216,14 +238,56 @@ function addV2ex() {
       anchor.parentNode.insertBefore(btn, anchor);
     }
 
-    anchors[i].onmouseover = function() {
-      this.getElementsByTagName('button')[0].style.display = 'inline';
-    };
+    anchors[i].addEventListener('mouseover', function(id) {
+      return function() {
+        this.querySelector(`#${id}`).style.display = 'inline';
+      };
+    }(btnId));
 
-    anchors[i].onmouseout = function() {
-      this.getElementsByTagName('button')[0].style.display = 'none';
-    };
+    anchors[i].addEventListener('mouseout', function(id) {
+      return function() {
+        this.querySelector(`#${id}`).style.display = 'none';
+      };
+    }(btnId));
   }
+}
+
+function appendV2ex() {
+  // Handle reply
+  const anchors = document.querySelectorAll('#Main .box .cell');
+
+  for (var i = 0; i < anchors.length; i++) {
+    var btnId = `appendText${i}`;
+    var btn = createAppendBtn(btnId);
+
+    const anchor = anchors[i].querySelector('.fr .no');
+    if (anchor) {
+      var author = anchors[i].querySelector('.dark').innerText;
+      var date = anchors[i].querySelector('.ago').innerText;
+      var like = anchors[i].querySelector('.small') ? ('❤' + anchors[i].querySelector('.small').innerText.trim()) : '';
+      var floor = anchors[i].querySelector('.fr .no').innerText;
+      var content = anchors[i].querySelector('.reply_content').innerText;
+      btn.copiedText = `${author}\t${date}\t${like}\t#${floor}\n${content}`;
+      anchor.parentNode.insertBefore(btn, anchor);
+    }
+
+    anchors[i].addEventListener('mouseover', function(id) {
+      return function() {
+        this.querySelector(`#${id}`).style.display = 'inline';
+      };
+    }(btnId));
+
+    anchors[i].addEventListener('mouseout', function(id) {
+      return function() {
+        this.querySelector(`#${id}`).style.display = 'none';
+      };
+    }(btnId));
+  }
+}
+
+function processV2ex() {
+  copyV2ex();
+  appendV2ex();
 }
 
 function addZhct() {
@@ -434,6 +498,17 @@ function createBtn(id='copyText', ele='button') {
   return btn;
 }
 
+function createAppendBtn(id='appendText', ele='button') {
+  var btn = document.createElement(ele);
+
+  btn.innerHTML = 'Append';
+  btn.setAttribute('id', id);
+  btn.addEventListener('click', appendText, false);
+  btn.style.display = 'none';
+
+  return btn;
+}
+
 function addBtn() {
   try{
     switch(window.location.hostname){
@@ -447,7 +522,7 @@ function addBtn() {
       break;
     case "www.v2ex.com":
     case "v2ex.com":
-      addV2ex();
+      processV2ex();
       break;
     case "www.douban.com":
     case "douban.com":
