@@ -18,6 +18,15 @@
 
 
 var copiedTextArray = [];
+
+function clearText(evt) {
+  copiedTextArray = [];
+
+  const btn = evt.currentTarget;
+  btn.innerHTML = 'Cleared';
+  setTimeout(function() { btn.innerHTML = 'Clear'; }, 3000);
+}
+
 function appendText(evt) {
   var text = getBtnText(evt);
 
@@ -287,9 +296,43 @@ function appendV2ex() {
   }
 }
 
+function clearV2ex() {
+  // Handle reply
+  const anchors = document.querySelectorAll('#Main .box .cell');
+
+  for (var i = 0; i < anchors.length; i++) {
+    var btnId = `clearText${i}`;
+    var btn = createClearBtn(btnId);
+
+    const anchor = anchors[i].querySelector('.fr .no');
+    if (anchor) {
+      var author = anchors[i].querySelector('.dark').innerText;
+      var date = anchors[i].querySelector('.ago').innerText;
+      var like = anchors[i].querySelector('.small') ? ('❤' + anchors[i].querySelector('.small').innerText.trim()) : '';
+      var floor = anchors[i].querySelector('.fr .no').innerText;
+      var content = anchors[i].querySelector('.reply_content').innerText;
+      btn.copiedText = `${author}\t${date}\t${like}\t#${floor}\n${content}`;
+      anchor.parentNode.insertBefore(btn, anchor);
+    }
+
+    anchors[i].addEventListener('mouseover', function(id) {
+      return function() {
+        this.querySelector(`#${id}`).style.display = 'inline';
+      };
+    }(btnId));
+
+    anchors[i].addEventListener('mouseout', function(id) {
+      return function() {
+        this.querySelector(`#${id}`).style.display = 'none';
+      };
+    }(btnId));
+  }
+}
+
 function processV2ex() {
   copyV2ex();
   appendV2ex();
+  clearV2ex();
 }
 
 function addZhct() {
@@ -506,6 +549,17 @@ function createAppendBtn(id='appendText', ele='button') {
   btn.innerHTML = 'Append';
   btn.setAttribute('id', id);
   btn.addEventListener('click', appendText, false);
+  btn.style.display = 'none';
+
+  return btn;
+}
+
+function createClearBtn(id='clearText', ele='button') {
+  var btn = document.createElement(ele);
+
+  btn.innerHTML = 'Clear';
+  btn.setAttribute('id', id);
+  btn.addEventListener('click', clearText, false);
   btn.style.display = 'none';
 
   return btn;
