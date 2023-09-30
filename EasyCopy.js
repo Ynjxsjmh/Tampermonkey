@@ -19,11 +19,7 @@
 
 var copiedTextArray = [];
 function appendText(evt) {
-  var text = evt.currentTarget.copiedText;
-  if (text === null || text === undefined || text === '') {
-    var copyTextFun = evt.currentTarget.copyTextFun;
-    text = copyTextFun();
-  }
+  var text = getBtnText(evt);
 
   copiedTextArray.push(text);
   text = copiedTextArray.join('\n\n');
@@ -36,17 +32,23 @@ function appendText(evt) {
 }
 
 function copyText(evt) {
-  var text = evt.currentTarget.copiedText;
-  if (text === null || text === undefined || text === '') {
-    var copyTextFun = evt.currentTarget.copyTextFun;
-    text = copyTextFun();
-  }
+  var text = getBtnText(evt);
 
   writeClipboard(text);
 
   const btn = evt.currentTarget;
   btn.innerHTML = 'Copied';
   setTimeout(function() { btn.innerHTML = 'Copy'; }, 3000);
+}
+
+function getBtnText(evt) {
+  var text = evt.currentTarget.copiedText;
+  if (text === null || text === undefined || text === '') {
+    var copyTextFun = evt.currentTarget.copyTextFun;
+    text = copyTextFun();
+  }
+
+  return text;
 }
 
 function writeClipboard(text) {
