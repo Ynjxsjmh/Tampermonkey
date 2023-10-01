@@ -206,6 +206,16 @@ function addSis001() {
   }
 }
 
+function formatV2ex(area) {
+  var author = area.querySelector('.dark').innerText;
+  var date = area.querySelector('.ago').innerText;
+  var like = area.querySelector('.small') ? ('❤' + area.querySelector('.small').innerText.trim()) : '';
+  var floor = area.querySelector('.fr .no').innerText;
+  var content = area.querySelector('.reply_content').innerText;
+
+  return `${author}\t${date}\t${like}\t#${floor}\n${content}`;
+}
+
 function copyV2ex() {
   // Handle post
   var post = document.querySelector('#Main .box');
@@ -240,12 +250,8 @@ function copyV2ex() {
     btn.style.display = 'none';
 
     if (anchor) {
-      var author = anchors[i].querySelector('.dark').innerText;
-      var date = anchors[i].querySelector('.ago').innerText;
-      var like = anchors[i].querySelector('.small') ? ('❤' + anchors[i].querySelector('.small').innerText.trim()) : '';
-      var floor = anchors[i].querySelector('.fr .no').innerText;
-      var content = anchors[i].querySelector('.reply_content').innerText;
-      btn.copiedText = `${author}\t${date}\t${like}\t#${floor}\n${content}`;
+      const formatText = formatV2ex(anchors[i]);
+      btn.copiedText = formatText;
       anchor.parentNode.insertBefore(btn, anchor);
     }
 
@@ -273,12 +279,8 @@ function appendV2ex() {
 
     const anchor = anchors[i].querySelector('.fr .no');
     if (anchor) {
-      var author = anchors[i].querySelector('.dark').innerText;
-      var date = anchors[i].querySelector('.ago').innerText;
-      var like = anchors[i].querySelector('.small') ? ('❤' + anchors[i].querySelector('.small').innerText.trim()) : '';
-      var floor = anchors[i].querySelector('.fr .no').innerText;
-      var content = anchors[i].querySelector('.reply_content').innerText;
-      btn.copiedText = `${author}\t${date}\t${like}\t#${floor}\n${content}`;
+      const formatText = formatV2ex(anchors[i]);
+      btn.copiedText = formatText;
       anchor.parentNode.insertBefore(btn, anchor);
     }
 
