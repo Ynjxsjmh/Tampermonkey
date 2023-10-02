@@ -228,11 +228,10 @@ function copyV2ex() {
     content = topic_content.innerText;
   }
 
-  var btn = document.createElement('button');
-  btn.innerHTML = 'Copy';
-  btn.setAttribute('id', 'copyText');
-  btn.addEventListener('click', copyText, false);
+  var btn = createBtn('copyText');
+  btn.style.display = 'inline';
   btn.copiedText = `${title}\n${author}\t${date}\n${content}`;
+
   const anchor = post.querySelector('.gray');
   anchor.parentNode.insertBefore(btn, anchor.nextSibling);
 
@@ -240,15 +239,10 @@ function copyV2ex() {
   const anchors = document.querySelectorAll('#Main .box .cell');
 
   for (var i = 0; i < anchors.length; i++) {
-    const anchor = anchors[i].querySelector('.fr .no');
-
     var btnId = `copyText${i}`;
-    var btn = document.createElement('button');
-    btn.innerHTML = 'Copy';
-    btn.setAttribute('id', btnId);
-    btn.addEventListener('click', copyText, false);
-    btn.style.display = 'none';
+    btn = createBtn(btnId);
 
+    const anchor = anchors[i].querySelector('.fr .no');
     if (anchor) {
       const formatText = formatV2ex(anchors[i]);
       btn.copiedText = formatText;
