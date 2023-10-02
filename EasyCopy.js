@@ -253,19 +253,8 @@ function copyV2ex() {
       const formatText = formatV2ex(anchors[i]);
       btn.copiedText = formatText;
       anchor.parentNode.insertBefore(btn, anchor);
+      hoverArea(anchors[i], btnId);
     }
-
-    anchors[i].addEventListener('mouseover', function(id) {
-      return function() {
-        this.querySelector(`#${id}`).style.display = 'inline';
-      };
-    }(btnId));
-
-    anchors[i].addEventListener('mouseout', function(id) {
-      return function() {
-        this.querySelector(`#${id}`).style.display = 'none';
-      };
-    }(btnId));
   }
 }
 
@@ -282,19 +271,8 @@ function appendV2ex() {
       const formatText = formatV2ex(anchors[i]);
       btn.copiedText = formatText;
       anchor.parentNode.insertBefore(btn, anchor);
+      hoverArea(anchors[i], btnId);
     }
-
-    anchors[i].addEventListener('mouseover', function(id) {
-      return function() {
-        this.querySelector(`#${id}`).style.display = 'inline';
-      };
-    }(btnId));
-
-    anchors[i].addEventListener('mouseout', function(id) {
-      return function() {
-        this.querySelector(`#${id}`).style.display = 'none';
-      };
-    }(btnId));
   }
 }
 
@@ -315,19 +293,8 @@ function clearV2ex() {
       var content = anchors[i].querySelector('.reply_content').innerText;
       btn.copiedText = `${author}\t${date}\t${like}\t#${floor}\n${content}`;
       anchor.parentNode.insertBefore(btn, anchor);
+      hoverArea(anchors[i], btnId);
     }
-
-    anchors[i].addEventListener('mouseover', function(id) {
-      return function() {
-        this.querySelector(`#${id}`).style.display = 'inline';
-      };
-    }(btnId));
-
-    anchors[i].addEventListener('mouseout', function(id) {
-      return function() {
-        this.querySelector(`#${id}`).style.display = 'none';
-      };
-    }(btnId));
   }
 }
 
@@ -565,6 +532,20 @@ function createClearBtn(id='clearText', ele='button') {
   btn.style.display = 'none';
 
   return btn;
+}
+
+function hoverArea(area, id) {
+  area.addEventListener('mouseover', function(id) {
+    return function() {
+      this.querySelector(`#${id}`).style.display = 'inline';
+    };
+  }(id));
+
+  area.addEventListener('mouseout', function(id) {
+    return function() {
+      this.querySelector(`#${id}`).style.display = 'none';
+    };
+  }(id));
 }
 
 function addBtn() {
