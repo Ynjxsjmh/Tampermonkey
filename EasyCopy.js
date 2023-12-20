@@ -12,6 +12,7 @@
 // @match        *.query.1234567.com.cn/Query/Detail*
 // @match        *.*zhct.*/weixin/orderdetail/*
 // @match        *.south-plus.org/read.php*
+// @match        *.pixiv.net/novel/show.php?id=*
 // @require      https://code.jquery.com/jquery-3.6.0.slim.min.js
 // @grant        none
 // ==/UserScript==
@@ -489,6 +490,22 @@ function addSouthPlus() {
 
 }
 
+function addPixiv() {
+  const addButton = () => {
+    var title = document.querySelector('div.charcoal-token main section h1').innerText;
+    var content = document.querySelector('div.charcoal-token div.sc-cvdZrU.fQzCLp').innerText;
+
+    var btn = createBtn();
+    btn.copiedText = title + '\n\n' + content;
+    btn.style.display = 'inline';
+
+    const anchor = document.querySelector('div.charcoal-token main section h1');
+    anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+  };
+
+  waitForKeyElements("div.charcoal-token main section h1", addButton);
+}
+
 function createBtn(id='copyText', ele='button') {
   var btn = document.createElement(ele);
 
@@ -565,6 +582,10 @@ function addBtn() {
     case "www.south-plus.org":
     case "south-plus.org":
       addSouthPlus();
+      break;
+    case "www.pixiv.net":
+    case "pixiv.net":
+      addPixiv();
       break;
     default:
       throw new Error('undefined source');
