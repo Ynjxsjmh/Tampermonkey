@@ -6,6 +6,7 @@
 // @author       Ynjxsjmh
 // @match        *.cool18.com/bbs4/*
 // @match        *.sis001.com/forum/*
+// @match        *.sexinsex.net/bbs/*
 // @match        *.v2ex.com/t/*
 // @match        *.douban.com/group/topic/*
 // @match        *.zhihu.com/question/*
@@ -200,6 +201,26 @@ function addSis001() {
     btn.setAttribute('id', `copyText${i}`);
     btn.addEventListener('click', copyText, false);
     btn.copiedText = anchors[i].querySelector('.postcontent .noSelect').innerText;
+
+    if (anchor) {
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+    }
+  }
+}
+
+function addSexinsex() {
+  const anchors = document.querySelectorAll('.mainbox.viewthread');
+
+  for (var i = 0; i < anchors.length; i++){
+    const anchor = anchors[i].querySelector('.postcontent .postinfo a');
+
+    var btn = document.createElement('a');
+    btn.innerHTML = 'Copy';
+    btn.setAttribute('id', `copyText${i}`);
+    btn.addEventListener('click', copyText, false);
+    var post = anchors[i].querySelector('.postcontent .postmessage').cloneNode(true);
+    post.querySelector("fieldset").remove();
+    btn.copiedText = post.innerText.trim();
 
     if (anchor) {
       anchor.parentNode.insertBefore(btn, anchor.nextSibling);
@@ -563,6 +584,10 @@ function addBtn() {
     case "www.sis001.com":
     case "sis001.com":
       addSis001();
+      break;
+    case "www.sexinsex.net":
+    case "sexinsex.net":
+      addSexinsex();
       break;
     case "www.v2ex.com":
     case "v2ex.com":
