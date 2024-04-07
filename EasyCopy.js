@@ -15,6 +15,7 @@
 // @match        *.south-plus.org/read.php*
 // @match        *.pixiv.net/novel/show.php?id=*
 // @match        *.youzhiyouxing.cn/materials/*
+// @match        *.jandan.net/bbs*
 // @require      https://code.jquery.com/jquery-3.6.0.slim.min.js
 // @grant        none
 // ==/UserScript==
@@ -550,6 +551,46 @@ function addYouzhiyouxing() {
   }
 }
 
+function addJandanBBS() {
+  const addButton = () => {
+    // Handle topic
+    const topic = document.querySelector('.topic-container');
+
+    if (topic) {
+      const title = topic.querySelector('h1').innerText;
+      const info = topic.querySelector('.thread-info').innerText;
+      const content = topic.querySelector('.thread-content').innerText;
+
+      const btn = createBtn('copyText');
+      btn.copiedText = `${title}\n${info}\n${content}`;
+
+      const anchor = topic.querySelector('.thread-bottom span');
+      btn.style.display = 'inline';
+      anchor.parentNode.insertBefore(btn, anchor);
+    }
+
+    // Handle reply
+    const anchors = document.querySelectorAll('#replies .reply-container .reply');
+
+    for (var i = 0; i < anchors.length; i++) {
+      const btnId = `copyText${i}`;
+      const replyBtn = createBtn(btnId);
+
+      const anchor = anchors[i].querySelector('.topic-function span');
+      if (anchor) {
+        const replyInfo = anchors[i].querySelector('.topic-author').innerText.replace('\n', '\t');
+        const replyContent = anchors[i].querySelector('.topic-content').innerText;
+
+        replyBtn.copiedText = `${replyInfo}\n${replyContent}`;
+        anchor.parentNode.insertBefore(replyBtn, anchor);
+        hoverArea(anchors[i], btnId);
+      }
+    }
+  };
+
+  waitForKeyElements("#content", addButton);
+}
+
 function createBtn(id='copyText', ele='button') {
   var btn = document.createElement(ele);
 
@@ -638,6 +679,10 @@ function addBtn() {
     case "www.youzhiyouxing.cn":
     case "youzhiyouxing.cn":
       addYouzhiyouxing();
+      break;
+    case "www.jandan.net":
+    case "jandan.net":
+      addJandanBBS();
       break;
     default:
       throw new Error('undefined source');
