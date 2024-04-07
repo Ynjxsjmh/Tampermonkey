@@ -14,6 +14,7 @@
 // @match        *.*zhct.*/weixin/orderdetail/*
 // @match        *.south-plus.org/read.php*
 // @match        *.pixiv.net/novel/show.php?id=*
+// @match        *.youzhiyouxing.cn/materials/*
 // @require      https://code.jquery.com/jquery-3.6.0.slim.min.js
 // @grant        none
 // ==/UserScript==
@@ -527,6 +528,28 @@ function addPixiv() {
   waitForKeyElements("div.charcoal-token main section h1", addButton);
 }
 
+function addYouzhiyouxing() {
+  const commentArea = document.querySelector('ul.tw-space-y-10');
+  const anchors = commentArea.querySelectorAll('li');
+
+  for (var i = 0; i < anchors.length; i++) {
+    var btnId = `copyText${i}`;
+    var btn = createBtn(btnId, 'a');
+
+    const anchor = anchors[i].querySelector('div.tw-pl-9 div.tw-mt-4 svg');
+
+    if (anchor) {
+      var author = anchors[i].querySelector('div span').innerText;
+      var date = anchors[i].querySelector('div.tw-pl-9 div.tw-mt-4').innerText.replace('\n', '\t👍');
+      var content = anchors[i].querySelector('div.tw-pl-9 p').textContent.trim();
+      btn.copiedText = `${author}\t${date}\n${content}`;
+
+      anchor.parentNode.insertBefore(btn, anchor);
+      hoverArea(anchors[i], btnId);
+    }
+  }
+}
+
 function createBtn(id='copyText', ele='button') {
   var btn = document.createElement(ele);
 
@@ -611,6 +634,10 @@ function addBtn() {
     case "www.pixiv.net":
     case "pixiv.net":
       addPixiv();
+      break;
+    case "www.youzhiyouxing.cn":
+    case "youzhiyouxing.cn":
+      addYouzhiyouxing();
       break;
     default:
       throw new Error('undefined source');
