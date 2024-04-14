@@ -20,6 +20,7 @@
 // @grant        none
 // ==/UserScript==
 
+/********************************* Core *********************************/
 
 var copiedTextArray = [];
 
@@ -177,6 +178,7 @@ function waitForKeyElements (
     waitForKeyElements.controlObj   = controlObj;
 }
 
+/********************************* Func *********************************/
 
 function addCool18() {
   const anchor = document.querySelector('button');
@@ -590,6 +592,8 @@ function addJandanBBS() {
 
   waitForKeyElements("#content", addButton);
 }
+
+/********************************* Util *********************************/
 
 function createBtn(id='copyText', ele='button') {
   var btn = document.createElement(ele);
