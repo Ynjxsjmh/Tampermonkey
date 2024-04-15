@@ -16,6 +16,7 @@
 // @match        *.pixiv.net/novel/show.php?id=*
 // @match        *.youzhiyouxing.cn/materials/*
 // @match        *.jandan.net/bbs*
+// @match        *.bilibili.com/*
 // @require      https://code.jquery.com/jquery-3.6.0.slim.min.js
 // @grant        none
 // ==/UserScript==
@@ -179,6 +180,57 @@ function waitForKeyElements (
 }
 
 /********************************* Func *********************************/
+
+function addBilibili() {
+  const addButton = () => {
+    const replies = document.querySelectorAll('#comment .reply-list .reply-item');
+
+    for (var i = 0; i < replies.length; i++) {
+      // Create btn for root-reply
+      const anchor = replies[i].querySelector('.root-reply-container .reply-btn');
+      if (anchor) {
+        const btnId = `copyText${i}`;
+        const replyBtn = createBtn(btnId);
+
+        const replyAuthor  = replies[i].querySelector('.user-info .user-name').innerText;
+        const replyContent = replies[i].querySelector('.reply-content').innerText;
+        const replyTime = replies[i].querySelector('.reply-info .reply-time').innerText;
+        const replyLike = replies[i].querySelector('.reply-info .reply-like').innerText;
+
+        replyBtn.copiedText = `${replyAuthor}\t${replyTime}\t⬆${replyLike}\n${replyContent}`;
+        anchor.parentNode.insertBefore(replyBtn, anchor.nextSibling);
+        hoverArea(replies[i].querySelector('.root-reply-container'), btnId);
+      }
+
+      addSubButton();
+    }
+  };
+
+  const addSubButton = () => {
+    // Create btn for sub-reply-list
+    const subReplies = document.querySelectorAll('.sub-reply-container .sub-reply-list .sub-reply-item');
+    for (var j = 0; j < subReplies.length; j++) {
+      const subAnchor = subReplies[j].querySelector('.sub-reply-btn');
+      if (subAnchor) {
+        const subBtnId = `subCopyText${j}`;
+        const subReplyBtn = createBtn(subBtnId);
+
+        const subReplyAuthor  = subReplies[j].querySelector('.sub-user-info .sub-user-name').innerText;
+        const subReplyContent = subReplies[j].querySelector('.reply-content').innerText;
+        const subReplyTime = subReplies[j].querySelector('.sub-reply-info .sub-reply-time').innerText;
+        const subReplyLike = subReplies[j].querySelector('.sub-reply-info .sub-reply-like').innerText;
+
+        subReplyBtn.copiedText = `${subReplyAuthor}\t${subReplyTime}\t⬆${subReplyLike}\n${subReplyContent}`;
+        subAnchor.parentNode.insertBefore(subReplyBtn, subAnchor.nextSibling);
+        hoverArea(subReplies[j], subBtnId);
+      }
+    }
+  };
+
+  addButton();
+  waitForKeyElements('#comment .reply-list .reply-item', addButton);
+  waitForKeyElements('#comment .sub-reply-list .sub-reply-item', addSubButton);
+}
 
 function addCool18() {
   const anchor = document.querySelector('button');
@@ -687,6 +739,10 @@ function addBtn() {
     case "www.jandan.net":
     case "jandan.net":
       addJandanBBS();
+      break;
+    case "www.bilibili.com":
+    case "bilibili.com":
+      addBilibili();
       break;
     default:
       throw new Error('undefined source');
