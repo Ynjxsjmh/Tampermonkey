@@ -181,469 +181,617 @@ function waitForKeyElements (
 
 /********************************* Func *********************************/
 
-function addBilibili() {
-  const addButton = () => {
-    const replies = document.querySelectorAll('#comment .reply-list .reply-item');
+function processSite() {}
 
-    for (var i = 0; i < replies.length; i++) {
-      // Create btn for root-reply
-      const anchor = replies[i].querySelector('.root-reply-container .reply-btn');
-      if (anchor) {
-        const btnId = `copyText${i}`;
-        const replyBtn = createBtn(btnId);
+processSite.prototype = {
+  copy: function () {
+  },
 
-        const replyAuthor  = replies[i].querySelector('.user-info .user-name').innerText;
-        const replyContent = replies[i].querySelector('.reply-content').innerText;
-        const replyTime = replies[i].querySelector('.reply-info .reply-time').innerText;
-        const replyLike = replies[i].querySelector('.reply-info .reply-like').innerText;
+  append: function () {
+  },
 
-        replyBtn.copiedText = `${replyAuthor}\t${replyTime}\t⬆${replyLike}\n${replyContent}`;
-        anchor.parentNode.insertBefore(replyBtn, anchor.nextSibling);
-        hoverArea(replies[i].querySelector('.root-reply-container'), btnId);
+  clear: function () {
+  },
+
+  process: function () {
+    this.copy();
+    this.append();
+    this.clear();
+  },
+
+  createBtn: function () {
+  },
+
+  createAppendBtn: function () {
+  },
+
+  createClearBtn: function () {
+  },
+
+  hoverArea: function () {
+  },
+};
+
+function processBilibili() {}
+
+processBilibili.prototype = {
+  copy: function () {
+    const addButton = () => {
+      const replies = document.querySelectorAll('#comment .reply-list .reply-item');
+
+      for (var i = 0; i < replies.length; i++) {
+        // Create btn for root-reply
+        const anchor = replies[i].querySelector('.root-reply-container .reply-btn');
+        if (anchor) {
+          const btnId = `copyText${i}`;
+          const replyBtn = createBtn(btnId);
+
+          const replyAuthor  = replies[i].querySelector('.user-info .user-name').innerText;
+          const replyContent = replies[i].querySelector('.reply-content').innerText;
+          const replyTime = replies[i].querySelector('.reply-info .reply-time').innerText;
+          const replyLike = replies[i].querySelector('.reply-info .reply-like').innerText;
+
+          replyBtn.copiedText = `${replyAuthor}\t${replyTime}\t⬆${replyLike}\n${replyContent}`;
+          anchor.parentNode.insertBefore(replyBtn, anchor.nextSibling);
+          hoverArea(replies[i].querySelector('.root-reply-container'), btnId);
+        }
+
+        addSubButton();
       }
+    };
 
-      addSubButton();
-    }
-  };
+    const addSubButton = () => {
+      // Create btn for sub-reply-list
+      const subReplies = document.querySelectorAll('.sub-reply-container .sub-reply-list .sub-reply-item');
+      for (var j = 0; j < subReplies.length; j++) {
+        const subAnchor = subReplies[j].querySelector('.sub-reply-btn');
+        if (subAnchor) {
+          const subBtnId = `subCopyText${j}`;
+          const subReplyBtn = createBtn(subBtnId);
 
-  const addSubButton = () => {
-    // Create btn for sub-reply-list
-    const subReplies = document.querySelectorAll('.sub-reply-container .sub-reply-list .sub-reply-item');
-    for (var j = 0; j < subReplies.length; j++) {
-      const subAnchor = subReplies[j].querySelector('.sub-reply-btn');
-      if (subAnchor) {
-        const subBtnId = `subCopyText${j}`;
-        const subReplyBtn = createBtn(subBtnId);
+          const subReplyAuthor  = subReplies[j].querySelector('.sub-user-info .sub-user-name').innerText;
+          const subReplyContent = subReplies[j].querySelector('.reply-content').innerText;
+          const subReplyTime = subReplies[j].querySelector('.sub-reply-info .sub-reply-time').innerText;
+          const subReplyLike = subReplies[j].querySelector('.sub-reply-info .sub-reply-like').innerText;
 
-        const subReplyAuthor  = subReplies[j].querySelector('.sub-user-info .sub-user-name').innerText;
-        const subReplyContent = subReplies[j].querySelector('.reply-content').innerText;
-        const subReplyTime = subReplies[j].querySelector('.sub-reply-info .sub-reply-time').innerText;
-        const subReplyLike = subReplies[j].querySelector('.sub-reply-info .sub-reply-like').innerText;
-
-        subReplyBtn.copiedText = `${subReplyAuthor}\t${subReplyTime}\t⬆${subReplyLike}\n${subReplyContent}`;
-        subAnchor.parentNode.insertBefore(subReplyBtn, subAnchor.nextSibling);
-        hoverArea(subReplies[j], subBtnId);
+          subReplyBtn.copiedText = `${subReplyAuthor}\t${subReplyTime}\t⬆${subReplyLike}\n${subReplyContent}`;
+          subAnchor.parentNode.insertBefore(subReplyBtn, subAnchor.nextSibling);
+          hoverArea(subReplies[j], subBtnId);
+        }
       }
-    }
-  };
+    };
 
-  addButton();
-  waitForKeyElements('#comment .reply-list .reply-item', addButton);
-  waitForKeyElements('#comment .sub-reply-list .sub-reply-item', addSubButton);
-}
+    addButton();
+    waitForKeyElements('#comment .reply-list .reply-item', addButton);
+    waitForKeyElements('#comment .sub-reply-list .sub-reply-item', addSubButton);
+  },
 
-function addCool18() {
-  const anchor = document.querySelector('button');
+  process: function () {
+    this.copy();
+  },
+};
 
-  var btn = document.createElement('button');
-  btn.innerHTML = 'Copy';
-  btn.setAttribute('id', 'copyText');
-  btn.addEventListener('click', copyText, false);
-  btn.copiedText = document.querySelector('pre').innerText;
 
-  if (anchor) {
-    anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-  }
-}
+function processCool18() {}
 
-function addSis001() {
-  const anchors = document.querySelectorAll('.mainbox.viewthread');
-
-  for (var i = 0; i < anchors.length; i++){
-    const anchor = anchors[i].querySelector('.postcontent .postinfo a');
-
-    var btn = document.createElement('a');
-    btn.innerHTML = 'Copy';
-    btn.setAttribute('id', `copyText${i}`);
-    btn.addEventListener('click', copyText, false);
-    btn.copiedText = anchors[i].querySelector('.postcontent .noSelect').innerText;
-
-    if (anchor) {
-      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-    }
-  }
-}
-
-function addSexinsex() {
-  const anchors = document.querySelectorAll('.mainbox.viewthread');
-
-  for (var i = 0; i < anchors.length; i++){
-    const anchor = anchors[i].querySelector('.postcontent .postinfo a');
-
-    var btn = document.createElement('a');
-    btn.innerHTML = 'Copy';
-    btn.setAttribute('id', `copyText${i}`);
-    btn.addEventListener('click', copyText, false);
-    var post = anchors[i].querySelector('.postcontent .postmessage').cloneNode(true);
-    post.querySelector("fieldset").remove();
-    btn.copiedText = post.innerText.trim();
-
-    if (anchor) {
-      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-    }
-  }
-}
-
-function formatV2ex(area) {
-  var author = area.querySelector('.dark').innerText;
-  var date = area.querySelector('.ago').innerText;
-  var like = area.querySelector('.small') ? ('❤' + area.querySelector('.small').innerText.trim()) : '';
-  var floor = area.querySelector('.fr .no').innerText;
-  var content = area.querySelector('.reply_content').innerText;
-
-  return `${author}\t${date}\t${like}\t#${floor}\n${content}`;
-}
-
-function copyV2ex() {
-  // Handle post
-  var post = document.querySelector('#Main .box');
-  var title = post.querySelector('h1').innerText;
-  var author = post.querySelector('.gray a').innerText;
-  var date = post.querySelector('.gray span').title;
-  var topic_content = post.querySelector('.topic_content');
-  var content = "[作者未添加正文]";
-  if (topic_content !== null) {
-    content = topic_content.innerText;
-  }
-
-  var btn = createBtn('copyText');
-  btn.style.display = 'inline';
-  btn.copiedText = `${title}\n${author}\t${date}\n${content}`;
-
-  const anchor = post.querySelector('.gray');
-  anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-
-  // Handle reply
-  const anchors = document.querySelectorAll('#Main .box .cell');
-
-  for (var i = 0; i < anchors.length; i++) {
-    var btnId = `copyText${i}`;
-    btn = createBtn(btnId);
-
-    const anchor = anchors[i].querySelector('.fr .no');
-    if (anchor) {
-      const formatText = formatV2ex(anchors[i]);
-      btn.copiedText = formatText;
-      anchor.parentNode.insertBefore(btn, anchor);
-      hoverArea(anchors[i], btnId);
-    }
-  }
-}
-
-function appendV2ex() {
-  // Handle reply
-  const anchors = document.querySelectorAll('#Main .box .cell');
-
-  for (var i = 0; i < anchors.length; i++) {
-    var btnId = `appendText${i}`;
-    var btn = createAppendBtn(btnId);
-
-    const anchor = anchors[i].querySelector('.fr .no');
-    if (anchor) {
-      const formatText = formatV2ex(anchors[i]);
-      btn.copiedText = formatText;
-      anchor.parentNode.insertBefore(btn, anchor);
-      hoverArea(anchors[i], btnId);
-    }
-  }
-}
-
-function clearV2ex() {
-  // Handle reply
-  const anchors = document.querySelectorAll('#Main .box .cell');
-
-  for (var i = 0; i < anchors.length; i++) {
-    var btnId = `clearText${i}`;
-    var btn = createClearBtn(btnId);
-
-    const anchor = anchors[i].querySelector('.fr .no');
-    if (anchor) {
-      anchor.parentNode.insertBefore(btn, anchor);
-      hoverArea(anchors[i], btnId);
-    }
-  }
-}
-
-function processV2ex() {
-  copyV2ex();
-  appendV2ex();
-  clearV2ex();
-}
-
-function addZhct() {
-  const anchor = document.getElementById('nutrient');
-
-  const getText = () => {
-    const restaurant = document.getElementById('store_name').innerText;
-    var text = '';
-    const transactions = document.querySelectorAll("#lines > div");
-    for (let i = 0; i < transactions.length; i++) {
-      var transaction = transactions[i].querySelector("div");
-      var lines = transaction.childNodes;
-
-      const time = lines[lines.length-1].innerText;
-      const item = lines[0].innerText.split('\n').slice(0, 2).join(',');
-      const price = lines[0].innerText.split('\n')[2];
-      // 交易时间|商户名称|交易名称|交易金额
-      text += `${time}\t${restaurant}\t${item}\t${price}\n`;
-    }
-    return text;
-  };
-
-  var btn = document.createElement('button');
-  btn.innerHTML = 'Copy';
-  btn.setAttribute('id', 'copyText');
-  btn.addEventListener('click', copyText, false);
-  btn.copyTextFun = getText;
-
-  if (anchor) {
-    anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-  }
-}
-
-function addDouban () {
-  const params = new Proxy(new URLSearchParams(window.location.search), {
-    get: (searchParams, prop) => searchParams.get(prop),
-  });
-
-  var start = params.start ? Number(params.start) : 0;
-
-  if (start < 100) {
-    // Handle post
-    var anchor = document.querySelector('.create-time');
+processCool18.prototype = {
+  copy: function () {
+    const anchor = document.querySelector('button');
 
     var btn = document.createElement('button');
     btn.innerHTML = 'Copy';
     btn.setAttribute('id', 'copyText');
-    btn.setAttribute('class', 'owner-icon');
     btn.addEventListener('click', copyText, false);
-    btn.copyTextFun = () => {
-      var info = Array.from(document.querySelectorAll('h3 span')).map(span => span.innerText).join('\t');
-      var content = document.querySelector('.rich-content').innerText.trim();
-      return `${info}\n\n${content}`;
-    };
+    btn.copiedText = document.querySelector('pre').innerText;
 
     if (anchor) {
       anchor.parentNode.insertBefore(btn, anchor.nextSibling);
     }
-  }
+  },
 
-  // Handle reply
-  const comments = document.querySelectorAll('li[class*="comment-item"]');
-  var floor = start + 1;
+  process: function () {
+    this.copy();
+  },
+};
 
-  for (var i = 0; i < comments.length; i++) {
-    const comment = comments[i];
 
-    btn = document.createElement('a');
-    btn.innerHTML = 'Copy';
-    btn.setAttribute('id', `copyText${i}`);
-    btn.setAttribute('class', `copyText`);
-    btn.addEventListener('click', copyText, false);
-    btn.style.display = 'none';
+function processSis001() {}
 
-    var info = comment.querySelector('h4').innerText;
-    var like = comment.querySelector('.comment-vote').innerText;
-    var quote = comment.querySelector('.reply-quote');
-    var quoteContent = quote ? '> ' + quote.innerText : '';
-    var content = comment.querySelector('.reply-content').innerText;
+processSis001.prototype = {
+  copy: function () {
+    const anchors = document.querySelectorAll('.mainbox.viewthread');
 
-    btn.copiedText = `${info}\t${like}\t#${floor}\n${quoteContent}\n${content}`;
+    for (var i = 0; i < anchors.length; i++){
+      const anchor = anchors[i].querySelector('.postcontent .postinfo a');
 
-    anchor = comment.querySelector('.lnk-reply');
-    anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-
-    comment.onmouseover = function() {
-      this.querySelector('.copyText').style.display = 'block';
-    };
-
-    comment.onmouseout = function() {
-      this.querySelector('.copyText').style.display = 'none';
-    };
-
-    if (!comment.parentNode.id.includes('popular')) {
-      comment.querySelector('h4').innerHTML += `<span style="float: right">#${floor}</span>`;
-      floor += 1;
-    }
-  }
-}
-
-function addZhihuQuestion() {
-  const addButton = () => {
-    const answers = document.querySelectorAll('#QuestionAnswers-answers .List-item');
-
-    for (var i = 0; i < answers.length; i++) {
-      if ( answers[i].querySelector(`#copyText${i}`) ) {
-        continue;
-      }
-
-      var btn = document.createElement('button');
+      var btn = document.createElement('a');
       btn.innerHTML = 'Copy';
       btn.setAttribute('id', `copyText${i}`);
-      btn.setAttribute('class', 'Button Button--plain');
       btn.addEventListener('click', copyText, false);
-      btn.style.display = 'none';
+      btn.copiedText = anchors[i].querySelector('.postcontent .noSelect').innerText;
 
-      answers[i].onmouseover = function() {
-        this.getElementsByTagName('button')[0].style.display = 'inline';
-      };
-
-      answers[i].onmouseout = function() {
-        this.getElementsByTagName('button')[0].style.display = 'none';
-      };
-
-      var author = answers[i].querySelector('.AuthorInfo-name').textContent;
-      var date = answers[i].querySelector('.ContentItem-time span').getAttribute('data-tooltip');
-      var like = answers[i].querySelector('.VoteButton--up').getAttribute('aria-label').trim();
-      var link = answers[i].querySelector('.ContentItem-time a').href;
-      var content = answers[i].querySelector('.RichContent-inner .RichText').innerText;
-      btn.copiedText = `${author}\t${date}\t${like}\n${content}\n\n原文链接: ${link}`;
-
-      const anchor = answers[i].querySelector('.AnswerItem-authorInfo .AuthorInfo');
-      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+      if (anchor) {
+        anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+      }
     }
-  };
+  },
 
-  addButton();
-  waitForKeyElements("#QuestionAnswers-answers .List-item", addButton);
-}
+  process: function () {
+    this.copy();
+  },
+};
 
-function addEastMoney() {
-  const anchor = (Array.from(document.querySelectorAll('div.ui-confirm h3'))
-                  .find(el => el.textContent === '确认信息'));
 
-  var table = anchor.parentNode.querySelector('table');
-  var rows = table.querySelectorAll('tbody tr');
-  var cells = rows[0].querySelectorAll('td');
+function processSexinsex() {}
 
-  // Extract the values from the cells
-  var date = cells[0].textContent;
-  var netValue = cells[4].textContent;
-  var netCost = cells[5].textContent;
-  var shares = cells[6].textContent;
-  var fee = cells[7].textContent;
+processSexinsex.prototype = {
+  copy: function () {
+    const anchors = document.querySelectorAll('.mainbox.viewthread');
 
-  var btn = document.createElement('button');
-  btn.innerHTML = 'Copy';
-  btn.setAttribute('id', 'copyText');
-  btn.addEventListener('click', copyText, false);
-  btn.copiedText = `${date},${netValue},${netCost},${shares},${fee}`;
+    for (var i = 0; i < anchors.length; i++){
+      const anchor = anchors[i].querySelector('.postcontent .postinfo a');
 
-  if (anchor) {
-    anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-  }
-}
+      var btn = document.createElement('a');
+      btn.innerHTML = 'Copy';
+      btn.setAttribute('id', `copyText${i}`);
+      btn.addEventListener('click', copyText, false);
+      var post = anchors[i].querySelector('.postcontent .postmessage').cloneNode(true);
+      post.querySelector("fieldset").remove();
+      btn.copiedText = post.innerText.trim();
 
-function addSouthPlus() {
-  const anchors = document.querySelectorAll('div.t5.t2 tr.tr1:not(.r_one)');
+      if (anchor) {
+        anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+      }
+    }
+  },
 
-  for (var i = 0; i < anchors.length; i++) {
-    var btnId = `copyText${i}`;
-    var btn = createBtn(btnId, 'a');
+  process: function () {
+    this.copy();
+  },
+};
 
-    const anchor = anchors[i].querySelector('.tiptop .fr a');
 
-    if (anchor) {
-      var author = anchors[i].querySelector('th > div:nth-child(2) a').innerText;
-      var date = anchors[i].querySelector('.tiptop .fl.gray').innerText;
-      var floor = anchors[i].querySelector('.tiptop .fl .s3').innerText;
-      var content = anchors[i].querySelector('.tpc_content').innerText.trim();
-      btn.copiedText = `${author}\t${date}\t#${floor}\n${content}`;
-      anchor.parentNode.insertBefore(btn, anchor);
+function processV2ex() {}
+
+processV2ex.prototype = {
+  format: function (area) {
+    var author = area.querySelector('.dark').innerText;
+    var date = area.querySelector('.ago').innerText;
+    var like = area.querySelector('.small') ? ('❤' + area.querySelector('.small').innerText.trim()) : '';
+    var floor = area.querySelector('.fr .no').innerText;
+    var content = area.querySelector('.reply_content').innerText;
+
+    return `${author}\t${date}\t${like}\t#${floor}\n${content}`;
+  },
+
+  copy: function () {
+    // Handle post
+    var post = document.querySelector('#Main .box');
+    var title = post.querySelector('h1').innerText;
+    var author = post.querySelector('.gray a').innerText;
+    var date = post.querySelector('.gray span').title;
+    var topic_content = post.querySelector('.topic_content');
+    var content = "[作者未添加正文]";
+    if (topic_content !== null) {
+      content = topic_content.innerText;
     }
 
-    anchors[i].onmouseover = (function(id) {
-      return function() {
-        this.querySelector(`#${id}`).style.display = 'inline';
-      };
-    })(btnId);
-
-    anchors[i].onmouseout = (function(id) {
-      return function() {
-        this.querySelector(`#${id}`).style.display = 'none';
-      };
-    })(btnId);
-  }
-
-}
-
-function addPixiv() {
-  const addButton = () => {
-    var title = document.querySelector('div.charcoal-token main section h1').innerText;
-    var content = document.querySelector('div.charcoal-token div.sc-cvdZrU.fQzCLp').innerText;
-
-    var btn = createBtn();
-    btn.copiedText = title + '\n\n' + content;
+    var btn = createBtn('copyText');
     btn.style.display = 'inline';
+    btn.copiedText = `${title}\n${author}\t${date}\n${content}`;
 
-    const anchor = document.querySelector('div.charcoal-token main section h1');
+    const anchor = post.querySelector('.gray');
     anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-  };
-
-  waitForKeyElements("div.charcoal-token main section h1", addButton);
-}
-
-function addYouzhiyouxing() {
-  const commentArea = document.querySelector('ul.tw-space-y-10');
-  const anchors = commentArea.querySelectorAll('li');
-
-  for (var i = 0; i < anchors.length; i++) {
-    var btnId = `copyText${i}`;
-    var btn = createBtn(btnId, 'a');
-
-    const anchor = anchors[i].querySelector('div.tw-pl-9 div.tw-mt-4 svg');
-
-    if (anchor) {
-      var author = anchors[i].querySelector('div span').innerText;
-      var date = anchors[i].querySelector('div.tw-pl-9 div.tw-mt-4').innerText.replace('\n', '\t👍');
-      var content = anchors[i].querySelector('div.tw-pl-9 p').textContent.trim();
-      btn.copiedText = `${author}\t${date}\n${content}`;
-
-      anchor.parentNode.insertBefore(btn, anchor);
-      hoverArea(anchors[i], btnId);
-    }
-  }
-}
-
-function addJandanBBS() {
-  const addButton = () => {
-    // Handle topic
-    const topic = document.querySelector('.topic-container');
-
-    if (topic) {
-      const title = topic.querySelector('h1').innerText;
-      const info = topic.querySelector('.thread-info').innerText;
-      const content = topic.querySelector('.thread-content').innerText;
-
-      const btn = createBtn('copyText');
-      btn.copiedText = `${title}\n${info}\n${content}`;
-
-      const anchor = topic.querySelector('.thread-bottom span');
-      btn.style.display = 'inline';
-      anchor.parentNode.insertBefore(btn, anchor);
-    }
 
     // Handle reply
-    const anchors = document.querySelectorAll('#replies .reply-container .reply');
+    const anchors = document.querySelectorAll('#Main .box .cell');
 
     for (var i = 0; i < anchors.length; i++) {
-      const btnId = `copyText${i}`;
-      const replyBtn = createBtn(btnId);
+      var btnId = `copyText${i}`;
+      btn = createBtn(btnId);
 
-      const anchor = anchors[i].querySelector('.topic-function span');
+      const anchor = anchors[i].querySelector('.fr .no');
       if (anchor) {
-        const replyInfo = anchors[i].querySelector('.topic-author').innerText.replace('\n', '\t');
-        const replyContent = anchors[i].querySelector('.topic-content').innerText;
-
-        replyBtn.copiedText = `${replyInfo}\n${replyContent}`;
-        anchor.parentNode.insertBefore(replyBtn, anchor);
+        const formatText = this.format(anchors[i]);
+        btn.copiedText = formatText;
+        anchor.parentNode.insertBefore(btn, anchor);
         hoverArea(anchors[i], btnId);
       }
     }
-  };
+  },
 
-  waitForKeyElements("#content", addButton);
-}
+  append: function () {
+    // Handle reply
+    const anchors = document.querySelectorAll('#Main .box .cell');
+
+    for (var i = 0; i < anchors.length; i++) {
+      var btnId = `appendText${i}`;
+      var btn = createAppendBtn(btnId);
+
+      const anchor = anchors[i].querySelector('.fr .no');
+      if (anchor) {
+        const formatText = this.format(anchors[i]);
+        btn.copiedText = formatText;
+        anchor.parentNode.insertBefore(btn, anchor);
+        hoverArea(anchors[i], btnId);
+      }
+    }
+  },
+
+  clear: function () {
+    // Handle reply
+    const anchors = document.querySelectorAll('#Main .box .cell');
+
+    for (var i = 0; i < anchors.length; i++) {
+      var btnId = `clearText${i}`;
+      var btn = createClearBtn(btnId);
+
+      const anchor = anchors[i].querySelector('.fr .no');
+      if (anchor) {
+        anchor.parentNode.insertBefore(btn, anchor);
+        hoverArea(anchors[i], btnId);
+      }
+    }
+  },
+
+  process: function () {
+    this.copy();
+    this.append();
+    this.clear();
+  },
+
+};
+
+
+function processZhct() {}
+
+processZhct.prototype = {
+  copy: function () {
+    const anchor = document.getElementById('nutrient');
+
+    const getText = () => {
+      const restaurant = document.getElementById('store_name').innerText;
+      var text = '';
+      const transactions = document.querySelectorAll("#lines > div");
+      for (let i = 0; i < transactions.length; i++) {
+        var transaction = transactions[i].querySelector("div");
+        var lines = transaction.childNodes;
+
+        const time = lines[lines.length-1].innerText;
+        const item = lines[0].innerText.split('\n').slice(0, 2).join(',');
+        const price = lines[0].innerText.split('\n')[2];
+        // 交易时间|商户名称|交易名称|交易金额
+        text += `${time}\t${restaurant}\t${item}\t${price}\n`;
+      }
+      return text;
+    };
+
+    var btn = document.createElement('button');
+    btn.innerHTML = 'Copy';
+    btn.setAttribute('id', 'copyText');
+    btn.addEventListener('click', copyText, false);
+    btn.copyTextFun = getText;
+
+    if (anchor) {
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+    }
+  },
+
+  process: function () {
+    this.copy();
+  },
+
+};
+
+
+function processDouban() {}
+
+processDouban.prototype = {
+  copy: function () {
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });
+
+    var start = params.start ? Number(params.start) : 0;
+
+    if (start < 100) {
+      // Handle post
+      var anchor = document.querySelector('.create-time');
+
+      var btn = document.createElement('button');
+      btn.innerHTML = 'Copy';
+      btn.setAttribute('id', 'copyText');
+      btn.setAttribute('class', 'owner-icon');
+      btn.addEventListener('click', copyText, false);
+      btn.copyTextFun = () => {
+        var info = (Array.from(document.querySelectorAll('h3 span'))
+                     .map(span => span.innerText).join('\t'));
+        var content = document.querySelector('.rich-content').innerText.trim();
+        return `${info}\n\n${content}`;
+      };
+
+      if (anchor) {
+        anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+      }
+    }
+
+    // Handle reply
+    const comments = document.querySelectorAll('li[class*="comment-item"]');
+    var floor = start + 1;
+
+    for (var i = 0; i < comments.length; i++) {
+      const comment = comments[i];
+
+      btn = document.createElement('a');
+      btn.innerHTML = 'Copy';
+      btn.setAttribute('id', `copyText${i}`);
+      btn.setAttribute('class', `copyText`);
+      btn.addEventListener('click', copyText, false);
+      btn.style.display = 'none';
+
+      var info = comment.querySelector('h4').innerText;
+      var like = comment.querySelector('.comment-vote').innerText;
+      var quote = comment.querySelector('.reply-quote');
+      var quoteContent = quote ? '> ' + quote.innerText : '';
+      var content = comment.querySelector('.reply-content').innerText;
+
+      btn.copiedText = `${info}\t${like}\t#${floor}\n${quoteContent}\n${content}`;
+
+      anchor = comment.querySelector('.lnk-reply');
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+
+      comment.onmouseover = function() {
+        this.querySelector('.copyText').style.display = 'block';
+      };
+
+      comment.onmouseout = function() {
+        this.querySelector('.copyText').style.display = 'none';
+      };
+
+      if (!comment.parentNode.id.includes('popular')) {
+        comment.querySelector('h4').innerHTML += `<span style="float: right">#${floor}</span>`;
+        floor += 1;
+      }
+    }
+  },
+
+  process: function () {
+    this.copy();
+  },
+
+};
+
+
+function processZhihuQuestion() {}
+
+processZhihuQuestion.prototype = {
+  copy: function () {
+    const addButton = () => {
+      const answers = document.querySelectorAll('#QuestionAnswers-answers .List-item');
+
+      for (var i = 0; i < answers.length; i++) {
+        if ( answers[i].querySelector(`#copyText${i}`) ) {
+          continue;
+        }
+
+        var btn = document.createElement('button');
+        btn.innerHTML = 'Copy';
+        btn.setAttribute('id', `copyText${i}`);
+        btn.setAttribute('class', 'Button Button--plain');
+        btn.addEventListener('click', copyText, false);
+        btn.style.display = 'none';
+
+        answers[i].onmouseover = function() {
+          this.getElementsByTagName('button')[0].style.display = 'inline';
+        };
+
+        answers[i].onmouseout = function() {
+          this.getElementsByTagName('button')[0].style.display = 'none';
+        };
+
+        var author = answers[i].querySelector('.AuthorInfo-name').textContent;
+        var date = answers[i].querySelector('.ContentItem-time span').getAttribute('data-tooltip');
+        var like = answers[i].querySelector('.VoteButton--up').getAttribute('aria-label').trim();
+        var link = answers[i].querySelector('.ContentItem-time a').href;
+        var content = answers[i].querySelector('.RichContent-inner .RichText').innerText;
+        btn.copiedText = `${author}\t${date}\t${like}\n${content}\n\n原文链接: ${link}`;
+
+        const anchor = answers[i].querySelector('.AnswerItem-authorInfo .AuthorInfo');
+        anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+      }
+    };
+
+    addButton();
+    waitForKeyElements("#QuestionAnswers-answers .List-item", addButton);
+  },
+
+  process: function () {
+    this.copy();
+  },
+};
+
+
+function processEastMoney() {}
+
+processEastMoney.prototype = {
+  copy: function () {
+    const anchor = (Array.from(document.querySelectorAll('div.ui-confirm h3'))
+                    .find(el => el.textContent === '确认信息'));
+
+    var table = anchor.parentNode.querySelector('table');
+    var rows = table.querySelectorAll('tbody tr');
+    var cells = rows[0].querySelectorAll('td');
+
+    // Extract the values from the cells
+    var date = cells[0].textContent;
+    var netValue = cells[4].textContent;
+    var netCost = cells[5].textContent;
+    var shares = cells[6].textContent;
+    var fee = cells[7].textContent;
+
+    var btn = document.createElement('button');
+    btn.innerHTML = 'Copy';
+    btn.setAttribute('id', 'copyText');
+    btn.addEventListener('click', copyText, false);
+    btn.copiedText = `${date},${netValue},${netCost},${shares},${fee}`;
+
+    if (anchor) {
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+    }
+  },
+
+  process: function () {
+    this.copy();
+  },
+};
+
+
+function processSouthPlus() {}
+
+processEastMoney.prototype = {
+  copy: function () {
+    const anchors = document.querySelectorAll('div.t5.t2 tr.tr1:not(.r_one)');
+
+    for (var i = 0; i < anchors.length; i++) {
+      var btnId = `copyText${i}`;
+      var btn = createBtn(btnId, 'a');
+
+      const anchor = anchors[i].querySelector('.tiptop .fr a');
+
+      if (anchor) {
+        var author = anchors[i].querySelector('th > div:nth-child(2) a').innerText;
+        var date = anchors[i].querySelector('.tiptop .fl.gray').innerText;
+        var floor = anchors[i].querySelector('.tiptop .fl .s3').innerText;
+        var content = anchors[i].querySelector('.tpc_content').innerText.trim();
+        btn.copiedText = `${author}\t${date}\t#${floor}\n${content}`;
+        anchor.parentNode.insertBefore(btn, anchor);
+      }
+
+      anchors[i].onmouseover = (function(id) {
+        return function() {
+          this.querySelector(`#${id}`).style.display = 'inline';
+        };
+      })(btnId);
+
+      anchors[i].onmouseout = (function(id) {
+        return function() {
+          this.querySelector(`#${id}`).style.display = 'none';
+        };
+      })(btnId);
+    }
+
+  },
+
+  process: function () {
+    this.copy();
+  },
+};
+
+
+function processPixiv() {}
+
+processPixiv.prototype = {
+  copy: function () {
+    const addButton = () => {
+      var title = document.querySelector('div.charcoal-token main section h1').innerText;
+      var content = document.querySelector('div.charcoal-token div.sc-cvdZrU.fQzCLp').innerText;
+
+      var btn = createBtn();
+      btn.copiedText = title + '\n\n' + content;
+      btn.style.display = 'inline';
+
+      const anchor = document.querySelector('div.charcoal-token main section h1');
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+    };
+
+    waitForKeyElements("div.charcoal-token main section h1", addButton);
+  },
+
+  process: function () {
+    this.copy();
+  },
+};
+
+
+function processYouzhiyouxing() {}
+
+processYouzhiyouxing.prototype = {
+  copy: function () {
+    const commentArea = document.querySelector('ul.tw-space-y-10');
+    const anchors = commentArea.querySelectorAll('li');
+
+    for (var i = 0; i < anchors.length; i++) {
+      var btnId = `copyText${i}`;
+      var btn = createBtn(btnId, 'a');
+
+      const anchor = anchors[i].querySelector('div.tw-pl-9 div.tw-mt-4 svg');
+
+      if (anchor) {
+        var author = anchors[i].querySelector('div span').innerText;
+        var date = anchors[i].querySelector('div.tw-pl-9 div.tw-mt-4').innerText.replace('\n', '\t👍');
+        var content = anchors[i].querySelector('div.tw-pl-9 p').textContent.trim();
+        btn.copiedText = `${author}\t${date}\n${content}`;
+
+        anchor.parentNode.insertBefore(btn, anchor);
+        hoverArea(anchors[i], btnId);
+      }
+    }
+  },
+
+  process: function () {
+    this.copy();
+  },
+};
+
+
+function processJandanBBS() {}
+
+processJandanBBS.prototype = {
+  copy: function () {
+    const addButton = () => {
+      // Handle topic
+      const topic = document.querySelector('.topic-container');
+
+      if (topic) {
+        const title = topic.querySelector('h1').innerText;
+        const info = topic.querySelector('.thread-info').innerText;
+        const content = topic.querySelector('.thread-content').innerText;
+
+        const btn = createBtn('copyText');
+        btn.copiedText = `${title}\n${info}\n${content}`;
+
+        const anchor = topic.querySelector('.thread-bottom span');
+        btn.style.display = 'inline';
+        anchor.parentNode.insertBefore(btn, anchor);
+      }
+
+      // Handle reply
+      const anchors = document.querySelectorAll('#replies .reply-container .reply');
+
+      for (var i = 0; i < anchors.length; i++) {
+        const btnId = `copyText${i}`;
+        const replyBtn = createBtn(btnId);
+
+        const anchor = anchors[i].querySelector('.topic-function span');
+        if (anchor) {
+          const replyInfo = anchors[i].querySelector('.topic-author').innerText.replace('\n', '\t');
+          const replyContent = anchors[i].querySelector('.topic-content').innerText;
+
+          replyBtn.copiedText = `${replyInfo}\n${replyContent}`;
+          anchor.parentNode.insertBefore(replyBtn, anchor);
+          hoverArea(anchors[i], btnId);
+        }
+      }
+    };
+
+    waitForKeyElements("#content", addButton);
+  },
+
+  process: function () {
+    this.copy();
+  },
+};
+
 
 /********************************* Util *********************************/
 
@@ -695,58 +843,62 @@ function hoverArea(area, id) {
 }
 
 function addBtn() {
+  var site = new processSite();
+
   try{
     switch(window.location.hostname){
     case "www.cool18.com":
     case "cool18.com":
-      addCool18();
+      site = new processCool18();
       break;
     case "www.sis001.com":
     case "sis001.com":
-      addSis001();
+      site = new processSis001();
       break;
     case "www.sexinsex.net":
     case "sexinsex.net":
-      addSexinsex();
+      site = new processSexinsex();
       break;
     case "www.v2ex.com":
     case "v2ex.com":
-      processV2ex();
+      site = new processV2ex();
       break;
     case "www.douban.com":
     case "douban.com":
-      addDouban();
+      site = new processDouban();
       break;
     case "www.zhihu.com":
     case "zhihu.com":
-      addZhihuQuestion();
+      site = new ZhihuQuestion();
       break;
     case "query.1234567.com.cn":
-      addEastMoney();
+      site = new processEastMoney();
       break;
     case "www.south-plus.org":
     case "south-plus.org":
-      addSouthPlus();
+      site = new processSouthPlus();
       break;
     case "www.pixiv.net":
     case "pixiv.net":
-      addPixiv();
+      site = new processPixiv();
       break;
     case "www.youzhiyouxing.cn":
     case "youzhiyouxing.cn":
-      addYouzhiyouxing();
+      site = new processYouzhiyouxing();
       break;
     case "www.jandan.net":
     case "jandan.net":
-      addJandanBBS();
+      site = new processJandanBBS();
       break;
     case "www.bilibili.com":
     case "bilibili.com":
-      addBilibili();
+      site = new processBilibili();
       break;
     default:
       throw new Error('undefined source');
     }
+
+    site.process();
   } catch(e){
     console.error(e);
   }
