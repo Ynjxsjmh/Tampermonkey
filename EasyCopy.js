@@ -181,41 +181,27 @@ function waitForKeyElements (
 
 /********************************* Func *********************************/
 
-function processSite() {}
+class SiteProcessor {
+  copy() {
+  }
 
-processSite.prototype = {
-  copy: function () {
-  },
+  append() {
+  }
 
-  append: function () {
-  },
+  clear() {
+  }
 
-  clear: function () {
-  },
-
-  process: function () {
+  process() {
     this.copy();
     this.append();
     this.clear();
-  },
+  }
 
-  createBtn: function () {
-  },
+}
 
-  createAppendBtn: function () {
-  },
 
-  createClearBtn: function () {
-  },
-
-  hoverArea: function () {
-  },
-};
-
-function processBilibili() {}
-
-processBilibili.prototype = {
-  copy: function () {
+class BilibiliProcessor extends SiteProcessor {
+  copy () {
     const addButton = () => {
       const replies = document.querySelectorAll('#comment .reply-list .reply-item');
 
@@ -264,18 +250,13 @@ processBilibili.prototype = {
     addButton();
     waitForKeyElements('#comment .reply-list .reply-item', addButton);
     waitForKeyElements('#comment .sub-reply-list .sub-reply-item', addSubButton);
-  },
+  }
 
-  process: function () {
-    this.copy();
-  },
 };
 
 
-function processCool18() {}
-
-processCool18.prototype = {
-  copy: function () {
+class Cool18Processor extends SiteProcessor {
+  copy() {
     const anchor = document.querySelector('button');
 
     var btn = document.createElement('button');
@@ -287,18 +268,13 @@ processCool18.prototype = {
     if (anchor) {
       anchor.parentNode.insertBefore(btn, anchor.nextSibling);
     }
-  },
+  }
 
-  process: function () {
-    this.copy();
-  },
 };
 
 
-function processSis001() {}
-
-processSis001.prototype = {
-  copy: function () {
+class Sis001Processor extends SiteProcessor {
+  copy() {
     const anchors = document.querySelectorAll('.mainbox.viewthread');
 
     for (var i = 0; i < anchors.length; i++){
@@ -314,18 +290,13 @@ processSis001.prototype = {
         anchor.parentNode.insertBefore(btn, anchor.nextSibling);
       }
     }
-  },
+  }
 
-  process: function () {
-    this.copy();
-  },
 };
 
 
-function processSexinsex() {}
-
-processSexinsex.prototype = {
-  copy: function () {
+class SexinsexProcessor extends SiteProcessor {
+  copy () {
     const anchors = document.querySelectorAll('.mainbox.viewthread');
 
     for (var i = 0; i < anchors.length; i++){
@@ -343,18 +314,14 @@ processSexinsex.prototype = {
         anchor.parentNode.insertBefore(btn, anchor.nextSibling);
       }
     }
-  },
+  }
 
-  process: function () {
-    this.copy();
-  },
 };
 
 
-function processV2ex() {}
+class V2exProcessor extends SiteProcessor {
 
-processV2ex.prototype = {
-  format: function (area) {
+  format(area) {
     var author = area.querySelector('.dark').innerText;
     var date = area.querySelector('.ago').innerText;
     var like = area.querySelector('.small') ? ('❤' + area.querySelector('.small').innerText.trim()) : '';
@@ -362,9 +329,9 @@ processV2ex.prototype = {
     var content = area.querySelector('.reply_content').innerText;
 
     return `${author}\t${date}\t${like}\t#${floor}\n${content}`;
-  },
+  }
 
-  copy: function () {
+  copy () {
     // Handle post
     var post = document.querySelector('#Main .box');
     var title = post.querySelector('h1').innerText;
@@ -398,9 +365,9 @@ processV2ex.prototype = {
         hoverArea(anchors[i], btnId);
       }
     }
-  },
+  }
 
-  append: function () {
+  append() {
     // Handle reply
     const anchors = document.querySelectorAll('#Main .box .cell');
 
@@ -416,9 +383,9 @@ processV2ex.prototype = {
         hoverArea(anchors[i], btnId);
       }
     }
-  },
+  }
 
-  clear: function () {
+  clear() {
     // Handle reply
     const anchors = document.querySelectorAll('#Main .box .cell');
 
@@ -432,21 +399,13 @@ processV2ex.prototype = {
         hoverArea(anchors[i], btnId);
       }
     }
-  },
+  }
 
-  process: function () {
-    this.copy();
-    this.append();
-    this.clear();
-  },
-
-};
+}
 
 
-function processZhct() {}
-
-processZhct.prototype = {
-  copy: function () {
+class ZhctProcessor extends SiteProcessor {
+  copy() {
     const anchor = document.getElementById('nutrient');
 
     const getText = () => {
@@ -475,19 +434,13 @@ processZhct.prototype = {
     if (anchor) {
       anchor.parentNode.insertBefore(btn, anchor.nextSibling);
     }
-  },
-
-  process: function () {
-    this.copy();
-  },
+  }
 
 };
 
 
-function processDouban() {}
-
-processDouban.prototype = {
-  copy: function () {
+class DoubanProcessor extends SiteProcessor {
+  copy() {
     const params = new Proxy(new URLSearchParams(window.location.search), {
       get: (searchParams, prop) => searchParams.get(prop),
     });
@@ -553,19 +506,13 @@ processDouban.prototype = {
         floor += 1;
       }
     }
-  },
-
-  process: function () {
-    this.copy();
-  },
+  }
 
 };
 
 
-function processZhihuQuestion() {}
-
-processZhihuQuestion.prototype = {
-  copy: function () {
+class ZhihuQuestionProcessor extends SiteProcessor {
+  copy() {
     const addButton = () => {
       const answers = document.querySelectorAll('#QuestionAnswers-answers .List-item');
 
@@ -603,18 +550,13 @@ processZhihuQuestion.prototype = {
 
     addButton();
     waitForKeyElements("#QuestionAnswers-answers .List-item", addButton);
-  },
+  }
 
-  process: function () {
-    this.copy();
-  },
 };
 
 
-function processEastMoney() {}
-
-processEastMoney.prototype = {
-  copy: function () {
+class EastMoneyProcessor extends SiteProcessor {
+  copy() {
     const anchor = (Array.from(document.querySelectorAll('div.ui-confirm h3'))
                     .find(el => el.textContent === '确认信息'));
 
@@ -638,18 +580,13 @@ processEastMoney.prototype = {
     if (anchor) {
       anchor.parentNode.insertBefore(btn, anchor.nextSibling);
     }
-  },
+  }
 
-  process: function () {
-    this.copy();
-  },
 };
 
 
-function processSouthPlus() {}
-
-processEastMoney.prototype = {
-  copy: function () {
+class SouthPlusProcessor extends SiteProcessor {
+  copy() {
     const anchors = document.querySelectorAll('div.t5.t2 tr.tr1:not(.r_one)');
 
     for (var i = 0; i < anchors.length; i++) {
@@ -680,18 +617,13 @@ processEastMoney.prototype = {
       })(btnId);
     }
 
-  },
+  }
 
-  process: function () {
-    this.copy();
-  },
 };
 
 
-function processPixiv() {}
-
-processPixiv.prototype = {
-  copy: function () {
+class PixivProcessor extends SiteProcessor {
+  copy() {
     const addButton = () => {
       var title = document.querySelector('div.charcoal-token main section h1').innerText;
       var content = document.querySelector('div.charcoal-token div.sc-cvdZrU.fQzCLp').innerText;
@@ -705,18 +637,13 @@ processPixiv.prototype = {
     };
 
     waitForKeyElements("div.charcoal-token main section h1", addButton);
-  },
+  }
 
-  process: function () {
-    this.copy();
-  },
 };
 
 
-function processYouzhiyouxing() {}
-
-processYouzhiyouxing.prototype = {
-  copy: function () {
+class YouzhiyouxingProcessor extends SiteProcessor {
+  copy() {
     const commentArea = document.querySelector('ul.tw-space-y-10');
     const anchors = commentArea.querySelectorAll('li');
 
@@ -736,18 +663,13 @@ processYouzhiyouxing.prototype = {
         hoverArea(anchors[i], btnId);
       }
     }
-  },
+  }
 
-  process: function () {
-    this.copy();
-  },
-};
+}
 
 
-function processJandanBBS() {}
-
-processJandanBBS.prototype = {
-  copy: function () {
+class JandanBBSProcessor extends SiteProcessor {
+  copy() {
     const addButton = () => {
       // Handle topic
       const topic = document.querySelector('.topic-container');
@@ -785,12 +707,9 @@ processJandanBBS.prototype = {
     };
 
     waitForKeyElements("#content", addButton);
-  },
+  }
 
-  process: function () {
-    this.copy();
-  },
-};
+}
 
 
 /********************************* Util *********************************/
@@ -843,56 +762,56 @@ function hoverArea(area, id) {
 }
 
 function addBtn() {
-  var site = new processSite();
+  var site = new SiteProcessor();
 
   try{
     switch(window.location.hostname){
     case "www.cool18.com":
     case "cool18.com":
-      site = new processCool18();
+      site = new Cool18Processor();
       break;
     case "www.sis001.com":
     case "sis001.com":
-      site = new processSis001();
+      site = new Sis001Processor();
       break;
     case "www.sexinsex.net":
     case "sexinsex.net":
-      site = new processSexinsex();
+      site = new SexinsexProcessor();
       break;
     case "www.v2ex.com":
     case "v2ex.com":
-      site = new processV2ex();
+      site = new V2exProcessor();
       break;
     case "www.douban.com":
     case "douban.com":
-      site = new processDouban();
+      site = new DoubanProcessor();
       break;
     case "www.zhihu.com":
     case "zhihu.com":
-      site = new ZhihuQuestion();
+      site = new ZhihuQuestionProcessor();
       break;
     case "query.1234567.com.cn":
-      site = new processEastMoney();
+      site = new EastMoneyProcessor();
       break;
     case "www.south-plus.org":
     case "south-plus.org":
-      site = new processSouthPlus();
+      site = new SouthPlusProcessor();
       break;
     case "www.pixiv.net":
     case "pixiv.net":
-      site = new processPixiv();
+      site = new PixivProcessor();
       break;
     case "www.youzhiyouxing.cn":
     case "youzhiyouxing.cn":
-      site = new processYouzhiyouxing();
+      site = new YouzhiyouxingProcessor();
       break;
     case "www.jandan.net":
     case "jandan.net":
-      site = new processJandanBBS();
+      site = new JandanBBSProcessor();
       break;
     case "www.bilibili.com":
     case "bilibili.com":
-      site = new processBilibili();
+      site = new BilibiliProcessor();
       break;
     default:
       throw new Error('undefined source');
