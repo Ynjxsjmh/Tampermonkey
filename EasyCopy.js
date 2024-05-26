@@ -23,6 +23,12 @@
 
 /********************************* Core *********************************/
 
+const Buttons = Object.freeze({
+    COPY:   Symbol("copy"),
+    APPEND: Symbol("append"),
+    CLEAR:  Symbol("clear")
+});
+
 var copiedTextArray = [];
 
 function clearText(evt) {
@@ -182,19 +188,77 @@ function waitForKeyElements (
 /********************************* Func *********************************/
 
 class SiteProcessor {
-  copy() {
-  }
+  copy() { }
 
-  append() {
-  }
+  append() { }
 
-  clear() {
-  }
+  clear() { }
 
   process() {
     this.copy();
     this.append();
     this.clear();
+  }
+
+  createButtonByType(btnId, btnType) {
+    var btn;
+
+    switch(btnType) {
+    case Buttons.COPY:
+      btn = createBtn(btnId);
+      break;
+    case Buttons.APPEND:
+      btn = createAppendBtn(btnId);
+      break;
+    case Buttons.CLEAR:
+      btn = createClearBtn(btnId);
+      break;
+    default:
+      throw new Error('undefined button type');
+    }
+
+    return btn;
+  }
+
+  formatPost () { }
+
+  formatReply () { }
+
+  addPostButton(btnId, area, anchorSelector) {
+    const btn = this.createButtonByType(btnId, Buttons.COPY);
+    btn.style.display = 'inline';
+    btn.copiedText = this.formatPost(area);
+
+    const anchor = area.querySelector(anchorSelector);
+    if (anchor) {
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+    }
+  }
+
+  addReplyButtons(btnIdPrefix, btnType, anchors, anchorSelector,
+                  isVisible=true, isBefore=false) {
+    for (var i = 0; i < anchors.length; i++) {
+      const btnId = `${btnIdPrefix}${i}`;
+      const btn = this.createButtonByType(btnId, btnType);
+
+      const anchor = anchors[i].querySelector(anchorSelector);
+      if (anchor) {
+        if (btnType !== Buttons.CLEAR) {
+          const formatText = this.formatReply(anchors[i]);
+          btn.copiedText = formatText;
+        }
+
+        if (isBefore) {
+          anchor.parentNode.insertBefore(btn, anchor.before);
+        } else {
+          anchor.parentNode.insertBefore(btn, anchor);
+        }
+
+        if (isVisible) {
+          hoverArea(anchors[i], btnId);
+        }
+      }
+    }
   }
 
 }
@@ -321,7 +385,7 @@ class SexinsexProcessor extends SiteProcessor {
 
 class V2exProcessor extends SiteProcessor {
 
-  format(area) {
+  formatReply(area) {
     var author = area.querySelector('.dark').innerText;
     var date = area.querySelector('.ago').innerText;
     var like = area.querySelector('.small') ? ('❤' + area.querySelector('.small').innerText.trim()) : '';
@@ -331,8 +395,7 @@ class V2exProcessor extends SiteProcessor {
     return `${author}\t${date}\t${like}\t#${floor}\n${content}`;
   }
 
-  copy () {
-    // Handle post
+  formatPost(area) {
     var post = document.querySelector('#Main .box');
     var title = post.querySelector('h1').innerText;
     var author = post.querySelector('.gray a').innerText;
@@ -343,62 +406,29 @@ class V2exProcessor extends SiteProcessor {
       content = topic_content.innerText;
     }
 
-    var btn = createBtn('copyText');
-    btn.style.display = 'inline';
-    btn.copiedText = `${title}\n${author}\t${date}\n${content}`;
+    return `${title}\n${author}\t${date}\n${content}`;
+  }
 
-    const anchor = post.querySelector('.gray');
-    anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+  copy() {
+    // Handle post
+    var post = document.querySelector('#Main .box');
+    this.addPostButton('copyText', post, '.gray');
 
     // Handle reply
     const anchors = document.querySelectorAll('#Main .box .cell');
-
-    for (var i = 0; i < anchors.length; i++) {
-      var btnId = `copyText${i}`;
-      btn = createBtn(btnId);
-
-      const anchor = anchors[i].querySelector('.fr .no');
-      if (anchor) {
-        const formatText = this.format(anchors[i]);
-        btn.copiedText = formatText;
-        anchor.parentNode.insertBefore(btn, anchor);
-        hoverArea(anchors[i], btnId);
-      }
-    }
+    this.addReplyButtons('copyText', Buttons.COPY, anchors, '.fr .no');
   }
 
   append() {
     // Handle reply
     const anchors = document.querySelectorAll('#Main .box .cell');
-
-    for (var i = 0; i < anchors.length; i++) {
-      var btnId = `appendText${i}`;
-      var btn = createAppendBtn(btnId);
-
-      const anchor = anchors[i].querySelector('.fr .no');
-      if (anchor) {
-        const formatText = this.format(anchors[i]);
-        btn.copiedText = formatText;
-        anchor.parentNode.insertBefore(btn, anchor);
-        hoverArea(anchors[i], btnId);
-      }
-    }
+    this.addReplyButtons('appendText', Buttons.APPEND, anchors, '.fr .no');
   }
 
   clear() {
     // Handle reply
     const anchors = document.querySelectorAll('#Main .box .cell');
-
-    for (var i = 0; i < anchors.length; i++) {
-      var btnId = `clearText${i}`;
-      var btn = createClearBtn(btnId);
-
-      const anchor = anchors[i].querySelector('.fr .no');
-      if (anchor) {
-        anchor.parentNode.insertBefore(btn, anchor);
-        hoverArea(anchors[i], btnId);
-      }
-    }
+    this.addReplyButtons('clearText', Buttons.CLEAR, anchors, '.fr .no');
   }
 
 }
