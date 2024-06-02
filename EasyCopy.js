@@ -200,18 +200,18 @@ class SiteProcessor {
     this.clear();
   }
 
-  createButtonByType(btnId, btnType) {
+  createButtonByType(btnId, btnType, btnEle) {
     var btn;
 
     switch(btnType) {
     case Buttons.COPY:
-      btn = createBtn(btnId);
+      btn = createBtn(btnId, btnEle);
       break;
     case Buttons.APPEND:
-      btn = createAppendBtn(btnId);
+      btn = createAppendBtn(btnId, btnEle);
       break;
     case Buttons.CLEAR:
-      btn = createClearBtn(btnId);
+      btn = createClearBtn(btnId, btnEle);
       break;
     default:
       throw new Error('undefined button type');
@@ -220,13 +220,29 @@ class SiteProcessor {
     return btn;
   }
 
+  formatMeta () {
+    const options = {
+      weekday: 'short',
+      year: 'numeric', month: 'numeric', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hour12: false,
+    };
+    const today = new Date();
+
+    const meta = `:PROPERTIES:
+      :URL: ${window.location.href}
+      :Time: <${today.toLocaleDateString('zh-CN', options)}>
+      :PubTime:
+    :END:`.replace(/ {4}/g, '');
+
+    return meta;
+  }
+
   formatPost () { }
 
   formatReply () { }
 
-  addPostButton(btnId, area, anchorSelector) {
-    const btn = this.createButtonByType(btnId, Buttons.COPY);
-    btn.style.display = 'inline';
+  addPostButton(btnId, area, anchorSelector, btnEle='button') {
+    const btn = this.createButtonByType(btnId, Buttons.COPY, btnEle);
     btn.copiedText = this.formatPost(area);
 
     const anchor = area.querySelector(anchorSelector);
@@ -236,10 +252,10 @@ class SiteProcessor {
   }
 
   addReplyButtons(btnIdPrefix, btnType, anchors, anchorSelector,
-                  isVisible=true, isBefore=false) {
+                  isHoverable=true, isNextSibling=false, btnEle='button') {
     for (var i = 0; i < anchors.length; i++) {
       const btnId = `${btnIdPrefix}${i}`;
-      const btn = this.createButtonByType(btnId, btnType);
+      const btn = this.createButtonByType(btnId, btnType, btnEle);
 
       const anchor = anchors[i].querySelector(anchorSelector);
       if (anchor) {
@@ -248,13 +264,13 @@ class SiteProcessor {
           btn.copiedText = formatText;
         }
 
-        if (isBefore) {
-          anchor.parentNode.insertBefore(btn, anchor.before);
+        if (isNextSibling) {
+          anchor.parentNode.insertBefore(btn, anchor.nextSibling);
         } else {
           anchor.parentNode.insertBefore(btn, anchor);
         }
 
-        if (isVisible) {
+        if (isHoverable) {
           hoverArea(anchors[i], btnId);
         }
       }
@@ -265,7 +281,29 @@ class SiteProcessor {
 
 
 class BilibiliProcessor extends SiteProcessor {
+  formatPost (area) {
+    const title = area.querySelector('#viewbox_report .video-info-title-inner').innerText;
+    const time = area.querySelector('#viewbox_report .video-info-meta .pubdate-ip-text').innerText;
+    const author = area.querySelector('.up-info-container .up-detail-top .up-name').innerText.trim();
+    const meta = this.formatMeta();
+    return `${title}\n${meta}\n${author}\t${time}`;
+  }
+
+
+  formatReply (area) {
+    const subReplyAuthor  = area.querySelector('.sub-user-info .sub-user-name').innerText;
+    const subReplyContent = area.querySelector('.reply-content').innerText;
+    const subReplyTime = area.querySelector('.sub-reply-info .sub-reply-time').innerText;
+    const subReplyLike = area.querySelector('.sub-reply-info .sub-reply-like').innerText;
+
+    return `${subReplyAuthor}\t${subReplyTime}\t⬆${subReplyLike}\n${subReplyContent}`;
+  }
+
   copy () {
+    const addBilibiliPostButton = () => {
+      this.addPostButton('copyText', document, '#viewbox_report .video-info-meta .pubdate-ip', 'div');
+    };
+
     const addButton = () => {
       const replies = document.querySelectorAll('#comment .reply-list .reply-item');
 
@@ -293,24 +331,10 @@ class BilibiliProcessor extends SiteProcessor {
     const addSubButton = () => {
       // Create btn for sub-reply-list
       const subReplies = document.querySelectorAll('.sub-reply-container .sub-reply-list .sub-reply-item');
-      for (var j = 0; j < subReplies.length; j++) {
-        const subAnchor = subReplies[j].querySelector('.sub-reply-btn');
-        if (subAnchor) {
-          const subBtnId = `subCopyText${j}`;
-          const subReplyBtn = createBtn(subBtnId);
-
-          const subReplyAuthor  = subReplies[j].querySelector('.sub-user-info .sub-user-name').innerText;
-          const subReplyContent = subReplies[j].querySelector('.reply-content').innerText;
-          const subReplyTime = subReplies[j].querySelector('.sub-reply-info .sub-reply-time').innerText;
-          const subReplyLike = subReplies[j].querySelector('.sub-reply-info .sub-reply-like').innerText;
-
-          subReplyBtn.copiedText = `${subReplyAuthor}\t${subReplyTime}\t⬆${subReplyLike}\n${subReplyContent}`;
-          subAnchor.parentNode.insertBefore(subReplyBtn, subAnchor.nextSibling);
-          hoverArea(subReplies[j], subBtnId);
-        }
-      }
+      this.addReplyButtons('subCopyText', Buttons.COPY, subReplies, '.sub-reply-btn', true, true);
     };
 
+    waitForKeyElements('#viewbox_report .copyright-icon', addBilibiliPostButton);
     addButton();
     waitForKeyElements('#comment .reply-list .reply-item', addButton);
     waitForKeyElements('#comment .sub-reply-list .sub-reply-item', addSubButton);
@@ -320,40 +344,25 @@ class BilibiliProcessor extends SiteProcessor {
 
 
 class Cool18Processor extends SiteProcessor {
+  formatPost (area) {
+    return area.querySelector('pre').innerText;
+  }
+
   copy() {
-    const anchor = document.querySelector('button');
-
-    var btn = document.createElement('button');
-    btn.innerHTML = 'Copy';
-    btn.setAttribute('id', 'copyText');
-    btn.addEventListener('click', copyText, false);
-    btn.copiedText = document.querySelector('pre').innerText;
-
-    if (anchor) {
-      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-    }
+    this.addPostButton('copyText', document, 'button');
   }
 
 };
 
 
 class Sis001Processor extends SiteProcessor {
+  formatReply (area) {
+    return area.querySelector('.postcontent .noSelect').innerText;
+  }
+
   copy() {
     const anchors = document.querySelectorAll('.mainbox.viewthread');
-
-    for (var i = 0; i < anchors.length; i++){
-      const anchor = anchors[i].querySelector('.postcontent .postinfo a');
-
-      var btn = document.createElement('a');
-      btn.innerHTML = 'Copy';
-      btn.setAttribute('id', `copyText${i}`);
-      btn.addEventListener('click', copyText, false);
-      btn.copiedText = anchors[i].querySelector('.postcontent .noSelect').innerText;
-
-      if (anchor) {
-        anchor.parentNode.insertBefore(btn, anchor.nextSibling);
-      }
-    }
+    this.addReplyButtons('copyText', Buttons.COPY, anchors, '.postcontent .postinfo a', false, true, 'a');
   }
 
 };
@@ -366,10 +375,7 @@ class SexinsexProcessor extends SiteProcessor {
     for (var i = 0; i < anchors.length; i++){
       const anchor = anchors[i].querySelector('.postcontent .postinfo a');
 
-      var btn = document.createElement('a');
-      btn.innerHTML = 'Copy';
-      btn.setAttribute('id', `copyText${i}`);
-      btn.addEventListener('click', copyText, false);
+      var btn = createBtn(`copyText${i}`, 'a');
       var post = anchors[i].querySelector('.postcontent .postmessage').cloneNode(true);
       post.querySelector("fieldset").remove();
       btn.copiedText = post.innerText.trim();
@@ -405,8 +411,9 @@ class V2exProcessor extends SiteProcessor {
     if (topic_content !== null) {
       content = topic_content.innerText;
     }
+    var meta = this.formatMeta();
 
-    return `${title}\n${author}\t${date}\n${content}`;
+    return `${title}\n${meta}\n${author}\t${date}\n${content}`;
   }
 
   copy() {
@@ -470,6 +477,21 @@ class ZhctProcessor extends SiteProcessor {
 
 
 class DoubanProcessor extends SiteProcessor {
+  formatReply (area, floor) {
+    var info = area.querySelector('h4').cloneNode(true);
+    if (info.querySelector('.easy-floor') !== null) {
+      floor = info.querySelector('.easy-floor').innerText.replace(/[# ]/g, '');
+      info.querySelector('.easy-floor').remove();
+    }
+    info = info.innerText.trim().replace(/(\r\n|\n|\r)/gm, '').replace(/ +/g, ' ');
+    var like = area.querySelector('.comment-vote').innerText;
+    var quote = area.querySelector('.reply-quote');
+    var quoteContent = quote ? '> ' + quote.innerText : '';
+    var content = area.querySelector('.reply-content').innerText;
+
+    return `${info}\t${like}\t#${floor}\n${quoteContent}\n${content}`;
+  }
+
   copy() {
     const params = new Proxy(new URLSearchParams(window.location.search), {
       get: (searchParams, prop) => searchParams.get(prop),
@@ -481,16 +503,15 @@ class DoubanProcessor extends SiteProcessor {
       // Handle post
       var anchor = document.querySelector('.create-time');
 
-      var btn = document.createElement('button');
-      btn.innerHTML = 'Copy';
-      btn.setAttribute('id', 'copyText');
+      var btn = createBtn('copyText');
       btn.setAttribute('class', 'owner-icon');
-      btn.addEventListener('click', copyText, false);
       btn.copyTextFun = () => {
-        var info = (Array.from(document.querySelectorAll('h3 span'))
+        const title = document.querySelector('.article h1').innerText.trim();
+        const info = (Array.from(document.querySelectorAll('h3 span'))
                      .map(span => span.innerText).join('\t'));
-        var content = document.querySelector('.rich-content').innerText.trim();
-        return `${info}\n\n${content}`;
+        const content = document.querySelector('.rich-content').innerText.trim();
+        const meta = this.formatMeta();
+        return `${title}\n${meta}\n${info}\n\n${content}`;
       };
 
       if (anchor) {
@@ -505,43 +526,78 @@ class DoubanProcessor extends SiteProcessor {
     for (var i = 0; i < comments.length; i++) {
       const comment = comments[i];
 
-      btn = document.createElement('a');
-      btn.innerHTML = 'Copy';
-      btn.setAttribute('id', `copyText${i}`);
-      btn.setAttribute('class', `copyText`);
-      btn.addEventListener('click', copyText, false);
-      btn.style.display = 'none';
+      const btnId = `copyText${i}`;
+      btn = createBtn(btnId, 'a');
 
-      var info = comment.querySelector('h4').innerText;
-      var like = comment.querySelector('.comment-vote').innerText;
-      var quote = comment.querySelector('.reply-quote');
-      var quoteContent = quote ? '> ' + quote.innerText : '';
-      var content = comment.querySelector('.reply-content').innerText;
-
-      btn.copiedText = `${info}\t${like}\t#${floor}\n${quoteContent}\n${content}`;
+      btn.copiedText = this.formatReply(comment, floor);
 
       anchor = comment.querySelector('.lnk-reply');
       anchor.parentNode.insertBefore(btn, anchor.nextSibling);
 
-      comment.onmouseover = function() {
-        this.querySelector('.copyText').style.display = 'block';
-      };
-
-      comment.onmouseout = function() {
-        this.querySelector('.copyText').style.display = 'none';
-      };
+      hoverArea(comment, btnId);
 
       if (!comment.parentNode.id.includes('popular')) {
-        comment.querySelector('h4').innerHTML += `<span style="float: right">#${floor}</span>`;
+        comment.querySelector('h4').innerHTML += `<span class="easy-floor" style="float: right">#${floor}</span>`;
         floor += 1;
       }
     }
   }
 
+  append () {
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });
+
+    var start = params.start ? Number(params.start) : 0;
+    var floor = start + 1;
+
+    const comments = document.querySelectorAll('li[class*="comment-item"]');
+
+    for (var i = 0; i < comments.length; i++) {
+      const comment = comments[i];
+
+      const btnId = `appendText${i}`;
+      var btn = createAppendBtn(btnId, 'a');
+
+      btn.copiedText = this.formatReply(comment, floor);
+
+      var anchor = comment.querySelector('.lnk-reply');
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+
+      hoverArea(comment, btnId);
+
+      floor += 1;
+    }
+  }
+
+  clear () {
+    const comments = document.querySelectorAll('li[class*="comment-item"]');
+
+    for (var i = 0; i < comments.length; i++) {
+      const comment = comments[i];
+
+      const btnId = `clearText${i}`;
+      var btn = createClearBtn(btnId, 'a');
+
+      var anchor = comment.querySelector('.lnk-reply');
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+
+      hoverArea(comment, btnId);
+    }
+  }
 };
 
 
 class ZhihuQuestionProcessor extends SiteProcessor {
+  formatReply (area) {
+    var author = area.querySelector('.AuthorInfo-name').textContent;
+    var date = area.querySelector('.ContentItem-time span').getAttribute('data-tooltip');
+    var like = area.querySelector('.VoteButton--up').getAttribute('aria-label').trim();
+    var link = area.querySelector('.ContentItem-time a').href;
+    var content = area.querySelector('.RichContent-inner .RichText').innerText;
+    return `${author}\t${date}\t${like}\n${content}\n\n原文链接: ${link}`;
+  }
+
   copy() {
     const addButton = () => {
       const answers = document.querySelectorAll('#QuestionAnswers-answers .List-item');
@@ -551,30 +607,16 @@ class ZhihuQuestionProcessor extends SiteProcessor {
           continue;
         }
 
-        var btn = document.createElement('button');
-        btn.innerHTML = 'Copy';
-        btn.setAttribute('id', `copyText${i}`);
+        const btnId = `copyText${i}`;
+        var btn = createBtn(btnId);
         btn.setAttribute('class', 'Button Button--plain');
-        btn.addEventListener('click', copyText, false);
-        btn.style.display = 'none';
 
-        answers[i].onmouseover = function() {
-          this.getElementsByTagName('button')[0].style.display = 'inline';
-        };
-
-        answers[i].onmouseout = function() {
-          this.getElementsByTagName('button')[0].style.display = 'none';
-        };
-
-        var author = answers[i].querySelector('.AuthorInfo-name').textContent;
-        var date = answers[i].querySelector('.ContentItem-time span').getAttribute('data-tooltip');
-        var like = answers[i].querySelector('.VoteButton--up').getAttribute('aria-label').trim();
-        var link = answers[i].querySelector('.ContentItem-time a').href;
-        var content = answers[i].querySelector('.RichContent-inner .RichText').innerText;
-        btn.copiedText = `${author}\t${date}\t${like}\n${content}\n\n原文链接: ${link}`;
+        btn.copiedText = this.formatReply(answers[i]);
 
         const anchor = answers[i].querySelector('.AnswerItem-authorInfo .AuthorInfo');
         anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+
+        hoverArea(answers[i], btnId);
       }
     };
 
@@ -601,10 +643,7 @@ class EastMoneyProcessor extends SiteProcessor {
     var shares = cells[6].textContent;
     var fee = cells[7].textContent;
 
-    var btn = document.createElement('button');
-    btn.innerHTML = 'Copy';
-    btn.setAttribute('id', 'copyText');
-    btn.addEventListener('click', copyText, false);
+    var btn = createBtn('copyText');
     btn.copiedText = `${date},${netValue},${netCost},${shares},${fee}`;
 
     if (anchor) {
@@ -616,54 +655,52 @@ class EastMoneyProcessor extends SiteProcessor {
 
 
 class SouthPlusProcessor extends SiteProcessor {
-  copy() {
-    const anchors = document.querySelectorAll('div.t5.t2 tr.tr1:not(.r_one)');
-
-    for (var i = 0; i < anchors.length; i++) {
-      var btnId = `copyText${i}`;
-      var btn = createBtn(btnId, 'a');
-
-      const anchor = anchors[i].querySelector('.tiptop .fr a');
-
-      if (anchor) {
-        var author = anchors[i].querySelector('th > div:nth-child(2) a').innerText;
-        var date = anchors[i].querySelector('.tiptop .fl.gray').innerText;
-        var floor = anchors[i].querySelector('.tiptop .fl .s3').innerText;
-        var content = anchors[i].querySelector('.tpc_content').innerText.trim();
-        btn.copiedText = `${author}\t${date}\t#${floor}\n${content}`;
-        anchor.parentNode.insertBefore(btn, anchor);
-      }
-
-      anchors[i].onmouseover = (function(id) {
-        return function() {
-          this.querySelector(`#${id}`).style.display = 'inline';
-        };
-      })(btnId);
-
-      anchors[i].onmouseout = (function(id) {
-        return function() {
-          this.querySelector(`#${id}`).style.display = 'none';
-        };
-      })(btnId);
+  formatReply (area) {
+    const author = area.querySelector('th > div:nth-child(2) a').innerText;
+    const date = area.querySelector('.tiptop .fl.gray').innerText;
+    const floor = area.querySelector('.tiptop .fl .s3').innerText;
+    const content = area.querySelector('.tpc_content').innerText.trim();
+    var h1 = area.querySelector('.h1 .fl');
+    if (h1) {
+      h1 = h1.innerText;
     }
 
+    if (floor === 'GF') {
+      const meta = this.formatMeta();
+      return `${h1}\n${meta}\n${author}\t${date}\t#${floor}\n${content}`;
+    } else {
+      return `${author}\t${date}\t#${floor}\n${h1}\n${content}`;
+    }
+  }
+
+  copy() {
+    const anchors = document.querySelectorAll('div.t5.t2 tr.tr1:not(.r_one)');
+    this.addReplyButtons('copyText', Buttons.COPY, anchors, '.tiptop .fr a', true, false, 'a');
+  }
+
+  append() {
+    const anchors = document.querySelectorAll('div.t5.t2 tr.tr1:not(.r_one)');
+    this.addReplyButtons('appendText', Buttons.APPEND, anchors, '.tiptop .fr a', true, false, 'a');
+  }
+
+  clear() {
+    const anchors = document.querySelectorAll('div.t5.t2 tr.tr1:not(.r_one)');
+    this.addReplyButtons('clearText', Buttons.CLEAR, anchors, '.tiptop .fr a', true, false, 'a');
   }
 
 };
 
 
 class PixivProcessor extends SiteProcessor {
+  formatPost(area) {
+    var title = area.querySelector('div.charcoal-token main section h1').innerText;
+    var content = area.querySelector('div.charcoal-token div.sc-cvdZrU.fQzCLp').innerText;
+    return title + '\n\n' + content;
+  }
+
   copy() {
     const addButton = () => {
-      var title = document.querySelector('div.charcoal-token main section h1').innerText;
-      var content = document.querySelector('div.charcoal-token div.sc-cvdZrU.fQzCLp').innerText;
-
-      var btn = createBtn();
-      btn.copiedText = title + '\n\n' + content;
-      btn.style.display = 'inline';
-
-      const anchor = document.querySelector('div.charcoal-token main section h1');
-      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+      this.addPostButton('copyText', document, 'div.charcoal-token main section h1');
     };
 
     waitForKeyElements("div.charcoal-token main section h1", addButton);
@@ -673,73 +710,57 @@ class PixivProcessor extends SiteProcessor {
 
 
 class YouzhiyouxingProcessor extends SiteProcessor {
+  formatReply (area) {
+    var author = area.querySelector('div span').innerText;
+    var date = area.querySelector('div.tw-pl-9 div.tw-mt-4').innerText.replace('\n', '\t👍');
+    var content = area.querySelector('div.tw-pl-9 p').textContent.trim();
+
+    return `${author}\t${date}\n${content}`;
+  }
+
   copy() {
     const commentArea = document.querySelector('ul.tw-space-y-10');
     const anchors = commentArea.querySelectorAll('li');
 
-    for (var i = 0; i < anchors.length; i++) {
-      var btnId = `copyText${i}`;
-      var btn = createBtn(btnId, 'a');
-
-      const anchor = anchors[i].querySelector('div.tw-pl-9 div.tw-mt-4 svg');
-
-      if (anchor) {
-        var author = anchors[i].querySelector('div span').innerText;
-        var date = anchors[i].querySelector('div.tw-pl-9 div.tw-mt-4').innerText.replace('\n', '\t👍');
-        var content = anchors[i].querySelector('div.tw-pl-9 p').textContent.trim();
-        btn.copiedText = `${author}\t${date}\n${content}`;
-
-        anchor.parentNode.insertBefore(btn, anchor);
-        hoverArea(anchors[i], btnId);
-      }
-    }
+    this.addReplyButtons('copyText', Buttons.COPY, anchors, 'div.tw-pl-9 div.tw-mt-4 svg', true, false, 'a');
   }
-
-}
+};
 
 
 class JandanBBSProcessor extends SiteProcessor {
+  formatPost (area) {
+    const title = area.querySelector('h1').innerText;
+    const info = area.querySelector('.thread-info').innerText;
+    const content = area.querySelector('.thread-content').innerText;
+    const meta = this.formatMeta();
+    return `${title}\n${meta}\n${info}\n${content}`;
+  }
+
+  formatReply (area) {
+    const replyInfo = area.querySelector('.topic-author').innerText.replace('\n', '\t');
+    const replyContent = area.querySelector('.topic-content').innerText;
+
+    return `${replyInfo}\n${replyContent}`;
+  }
+
   copy() {
     const addButton = () => {
       // Handle topic
       const topic = document.querySelector('.topic-container');
-
-      if (topic) {
-        const title = topic.querySelector('h1').innerText;
-        const info = topic.querySelector('.thread-info').innerText;
-        const content = topic.querySelector('.thread-content').innerText;
-
-        const btn = createBtn('copyText');
-        btn.copiedText = `${title}\n${info}\n${content}`;
-
-        const anchor = topic.querySelector('.thread-bottom span');
-        btn.style.display = 'inline';
-        anchor.parentNode.insertBefore(btn, anchor);
-      }
+      this.addPostButton('copyText', topic, '.thread-bottom span:last-child', 'span');
 
       // Handle reply
+      // 分开写 append, clear 按钮加不进去
       const anchors = document.querySelectorAll('#replies .reply-container .reply');
-
-      for (var i = 0; i < anchors.length; i++) {
-        const btnId = `copyText${i}`;
-        const replyBtn = createBtn(btnId);
-
-        const anchor = anchors[i].querySelector('.topic-function span');
-        if (anchor) {
-          const replyInfo = anchors[i].querySelector('.topic-author').innerText.replace('\n', '\t');
-          const replyContent = anchors[i].querySelector('.topic-content').innerText;
-
-          replyBtn.copiedText = `${replyInfo}\n${replyContent}`;
-          anchor.parentNode.insertBefore(replyBtn, anchor);
-          hoverArea(anchors[i], btnId);
-        }
-      }
+      this.addReplyButtons('copyText', Buttons.COPY, anchors, '.topic-function span', true, false, 'span');
+      this.addReplyButtons('appendText', Buttons.APPEND, anchors, '.topic-function span', true, false, 'span');
+      this.addReplyButtons('clearText', Buttons.CLEAR, anchors, '.topic-function span', true, false, 'span');
     };
 
     waitForKeyElements("#content", addButton);
   }
 
-}
+};
 
 
 /********************************* Util *********************************/
@@ -750,7 +771,6 @@ function createBtn(id='copyText', ele='button') {
   btn.innerHTML = 'Copy';
   btn.setAttribute('id', id);
   btn.addEventListener('click', copyText, false);
-  btn.style.display = 'none';
 
   return btn;
 }
@@ -761,7 +781,6 @@ function createAppendBtn(id='appendText', ele='button') {
   btn.innerHTML = 'Append';
   btn.setAttribute('id', id);
   btn.addEventListener('click', appendText, false);
-  btn.style.display = 'none';
 
   return btn;
 }
@@ -772,12 +791,13 @@ function createClearBtn(id='clearText', ele='button') {
   btn.innerHTML = 'Clear';
   btn.setAttribute('id', id);
   btn.addEventListener('click', clearText, false);
-  btn.style.display = 'none';
 
   return btn;
 }
 
 function hoverArea(area, id) {
+  area.querySelector(`#${id}`).style.display = 'none';
+
   area.addEventListener('mouseover', function(id) {
     return function() {
       this.querySelector(`#${id}`).style.display = 'inline';
