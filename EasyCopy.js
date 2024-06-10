@@ -744,6 +744,8 @@ class JandanBBSProcessor extends SiteProcessor {
   }
 
   copy() {
+    var self = this;
+
     const addButton = () => {
       // Handle topic
       const topic = document.querySelector('.topic-container');
@@ -752,12 +754,42 @@ class JandanBBSProcessor extends SiteProcessor {
       // Handle reply
       // 分开写 append, clear 按钮加不进去
       const anchors = document.querySelectorAll('#replies .reply-container .reply');
-      this.addReplyButtons('copyText', Buttons.COPY, anchors, '.topic-function span', true, false, 'span');
-      this.addReplyButtons('appendText', Buttons.APPEND, anchors, '.topic-function span', true, false, 'span');
-      this.addReplyButtons('clearText', Buttons.CLEAR, anchors, '.topic-function span', true, false, 'span');
+
+      for (var i = 0; i < anchors.length; i++) {
+        const copyBtnId = `copyText${i}`;
+        const copyBtn = this.createButtonByType(copyBtnId, Buttons.COPY, 'span');
+
+        const appendBtnId = `appendText${i}`;
+        const appendBtn = this.createButtonByType(appendBtnId, Buttons.APPEND, 'span');
+
+        const clearBtnId = `clearText${i}`;
+        const clearBtn = this.createButtonByType(clearBtnId, Buttons.CLEAR, 'span');
+
+        const anchor = anchors[i].querySelector('.topic-function span');
+        if (anchor) {
+          copyBtn.copyTextFun = (() => {
+            const currentAnchor = anchors[i];
+            return () => self.formatReply(currentAnchor);
+          })();
+
+          appendBtn.copyTextFun = (() => {
+            const currentAnchor = anchors[i];
+            return () => self.formatReply(currentAnchor);
+          })();
+
+          anchor.parentNode.insertBefore(copyBtn, anchor);
+          anchor.parentNode.insertBefore(appendBtn, anchor);
+          anchor.parentNode.insertBefore(clearBtn, anchor);
+
+          hoverArea(anchors[i], copyBtnId);
+          hoverArea(anchors[i], appendBtnId);
+          hoverArea(anchors[i], clearBtnId);
+        }
+      }
+
     };
 
-    waitForKeyElements("#content", addButton);
+    waitForKeyElements(".reply-container", addButton);
   }
 
 };
