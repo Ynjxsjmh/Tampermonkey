@@ -661,7 +661,7 @@ class SouthPlusProcessor extends SiteProcessor {
     const floor = area.querySelector('.tiptop .fl .s3').innerText;
     const content = area.querySelector('.tpc_content').innerText.trim();
     var h1 = area.querySelector('.h1 .fl');
-    if (h1) {
+    if (h1 !== null) {
       h1 = h1.innerText;
     }
 
