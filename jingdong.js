@@ -29,7 +29,7 @@
         $(".tr-th").each(function () {// 订单首行，就是有时间，订单号那行，订单和子订单都有
              // 获取时间订单号等.
             var ele = {
-                time: $(this).find(".dealtime").text(),
+                time: $(this).find(".dealtime").text().trim(),
                 billId: $(this).find(".number").text().trim().replace(/\s+/, ""),
                 shop: $(this).find(".order-shop").text().trim(),
                 amount: $(this).next().find(".amount span:first-child").text().replace("总额", "").trim(),
