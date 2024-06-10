@@ -600,7 +600,10 @@ class ZhihuQuestionProcessor extends SiteProcessor {
 
   copy() {
     const addButton = () => {
-      const answers = document.querySelectorAll('#QuestionAnswers-answers .List-item');
+      var answers = document.querySelectorAll('#QuestionAnswers-answers .List-item .ContentItem.AnswerItem');
+      if (window.location.href.includes('answer')) {
+        answers = document.querySelectorAll('.ContentItem.AnswerItem');
+      }
 
       for (var i = 0; i < answers.length; i++) {
         if ( answers[i].querySelector(`#copyText${i}`) ) {
