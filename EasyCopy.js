@@ -17,6 +17,8 @@
 // @match        *.youzhiyouxing.cn/materials/*
 // @match        *.jandan.net/bbs*
 // @match        *.bilibili.com/*
+// @match        *.xiaohongshu.com/explore/*
+// @match        *.xiaohongshu.com/discovery/item/*
 // @require      https://code.jquery.com/jquery-3.6.0.slim.min.js
 // @grant        none
 // ==/UserScript==
@@ -797,6 +799,56 @@ class JandanBBSProcessor extends SiteProcessor {
 
 };
 
+class XhsProcessor extends SiteProcessor {
+  formatPost (area) {
+    const title = area.querySelector('#detail-title').innerText;
+    const content = area.querySelector('#detail-desc').innerText;
+    const author = area.parentNode.querySelector('.author-container .username').innerText;
+    const date = area.querySelector('span.date').innerText;
+    const meta = this.formatMeta();
+    return `${title}\n${meta}\n${author}\t${date}\n${content}`;
+  }
+
+  formatReply (area) {
+    const author = area.querySelector('.author .name').innerText;
+    var tag = area.querySelector('.author .tag');
+    if (tag !== null) {
+      tag = '(' + tag.innerText + ')';
+    } else {
+      tag = '';
+    }
+    const info = area.querySelector('.info .date').innerText;
+    const content = area.querySelector('.content').innerText;
+    var like = area.querySelector('.info .interactions .like .count').innerText;
+    if (like === '赞') {
+      like = '';
+    } else {
+      like = `\t❤${like}`;
+    }
+
+    return `${author}${tag}\t${info}${like}\n${content}`;
+  }
+
+  copy() {
+    const addXhsPostButton = () => {
+      // Handle post
+      const post = document.querySelector('.note-scroller');
+      this.addPostButton('copyPostText', post, '.bottom-container .date');
+    };
+
+    const addButton = () => {
+      document.querySelectorAll('[id^="copyText"]').forEach(e => e.remove());
+      const replies = document.querySelectorAll('.list-container .comment-inner-container');
+      this.addReplyButtons('copyText', Buttons.COPY, replies, '.info .date .location', true, true);
+    };
+
+    waitForKeyElements(".comments-container .total", addXhsPostButton);
+    waitForKeyElements(".comments-container .list-container .comment-inner-container", addButton);
+  }
+
+};
+
+
 
 /********************************* Util *********************************/
 
@@ -897,6 +949,10 @@ function addBtn() {
     case "www.bilibili.com":
     case "bilibili.com":
       site = new BilibiliProcessor();
+      break;
+    case "www.xiaohongshu.com":
+    case "xiaohongshu.com":
+      site = new XhsProcessor();
       break;
     default:
       throw new Error('undefined source');
