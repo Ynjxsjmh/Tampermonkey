@@ -801,7 +801,12 @@ class JandanBBSProcessor extends SiteProcessor {
 
 class XhsProcessor extends SiteProcessor {
   formatPost (area) {
-    const title = area.querySelector('#detail-title').innerText;
+    let title = area.querySelector('#detail-title');
+    if (title !== null) {
+      title = title.innerText;
+    } else {
+      title = '';
+    }
     const content = area.querySelector('#detail-desc').innerText;
     const author = area.parentNode.querySelector('.author-container .username').innerText;
     const date = area.querySelector('span.date').innerText;
@@ -837,12 +842,18 @@ class XhsProcessor extends SiteProcessor {
     };
 
     const addButton = () => {
+      // 写成 append、clear函数只能创建一个
+      document.querySelectorAll('[id^="appendText"]').forEach(e => e.remove());
       document.querySelectorAll('[id^="copyText"]').forEach(e => e.remove());
+      document.querySelectorAll('[id^="clearText"]').forEach(e => e.remove());
       const replies = document.querySelectorAll('.list-container .comment-inner-container');
+      this.addReplyButtons('appendText', Buttons.APPEND, replies, '.info .date .location', true, true);
       this.addReplyButtons('copyText', Buttons.COPY, replies, '.info .date .location', true, true);
+      this.addReplyButtons('clearText', Buttons.CLEAR, replies, '.info .date .location', true, true);
     };
 
     waitForKeyElements(".comments-container .total", addXhsPostButton);
+    waitForKeyElements(".comments-el .no-comments", addXhsPostButton);
     waitForKeyElements(".comments-container .list-container .comment-inner-container", addButton);
   }
 
